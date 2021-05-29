@@ -1,14 +1,29 @@
 from numpy import (exp, random, array, dot)
 from pickle import (dump, load)
 
+"""
+Функция sigmoid_derivative используется другими функциями библиотеки.
+"""
 def sigmoid_derivative(x, alpha): 
     return (x *(1-x))*alpha 
 
-
+"""
+Функция sigmoid используется другими функциями библиотеки в качестве функции активации.
+"""
 def sigmoid(x): 
     return 1/(1+exp(-x))
-    
-    
+
+
+"""
+Функция create_weights нужна для создания весов. 
+
+l_size это список слоев с количеством их нейронов.
+
+Пример использования функции:
+syn = create_weights([3,10,10,2])
+Здесь три нейрона на входном слое, 
+два промежуточных слоя по 10 нейронов и 2 нейрона на выходе.
+"""
 def create_weights(l_size): 
     syn = []
     for i in range(len(l_size)-1):
@@ -16,6 +31,29 @@ def create_weights(l_size):
     return syn
 
 
+"""
+Функция training нужна для обучения нейросети 
+методом обратного распространения ошибки.
+Возвращает измененные веса. 
+Ее нужно вызывать в цикле столько раз сколько потребуется для обучения.
+
+Пример использования функции:
+for i in range(1000):
+    syn = training(inp, correct_output, syn)
+    
+inp это список нейронов входного слоя. 
+Они должны находится в диапазоне от 0 до 1.
+Например: inp = [1, 0, 0.7]
+
+correct_output это список правильных выходов для заданных входов.
+Они должны находится в диапазоне от 0 до 1.
+Например: correct_output = [0.5, 1]
+
+syn это веса нейросети, которые вы создали ранее
+
+alpha это коэфициент скорости обучения. 
+Его оптимальное значение меняется в зависимости от задачи.
+"""
 def training(inp, correct_output, syn, alpha = 0.9):
     l = [array([inp])]
     d = len(syn)
@@ -39,6 +77,17 @@ def training(inp, correct_output, syn, alpha = 0.9):
     return syn
 
 
+"""
+Функция result нужна для получения ответа нейросети.
+Возвращает список выходных нейронов.
+
+Пример использования:
+r = result(inp, syn)
+
+inp это список входных нейронов.
+
+syn это веса нейросети, которые вы создали ранее.
+"""
 def result(inp, syn): 
     l = [array([inp])]
     d = len(syn)
@@ -49,6 +98,15 @@ def result(inp, syn):
     return l[-1][0]
 
 
+"""
+Функция reverse работает так же как result,
+но проводит сигнал через нейросеть в обратном направлении.
+В нее в качестве входного слоя подают то что ранее считалось выходным слоем 
+
+
+Пример использования:
+r = reverse(inp, syn)
+"""
 def reverse(inp, syn):
     synr = list(reversed(syn))
     for ind, i in enumerate(synr):
@@ -61,6 +119,15 @@ def reverse(inp, syn):
         l.append(sigmoid(dot(l[-1],synr[i])))
     return l[-1][0]
 
+
+"""
+Функция download_syn нужна для загрузки весов из файла
+
+Пример использования:
+syn = download_syn()
+
+В качестве аргумента file_name можно указать имя файла .dat без указания формата.
+"""
 def download_syn(file_name = 'syn'):
     try: 
         with open(f'{file_name}.dat','rb') as file:
@@ -68,9 +135,16 @@ def download_syn(file_name = 'syn'):
     except:
         print('no file with saved weights')
 
+
+"""
+Функция save_syn нужна для сохранения весов в файл.
+
+Пример использования:
+save_syn(syn)
+
+В качестве аргумента file_name можно указать имя файла .dat без указания формата.
+"""
 def save_syn(syn, file_name = 'syn'):
     with open(f'{file_name}.dat','wb') as file:
         pickle.dump(syn, file)
     print('file saved')
-
-
