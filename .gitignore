@@ -1,5 +1,0 @@
-.gitignore
-setup.cfg
-setup.py
-/neurobiba.egg-info
-/dist
