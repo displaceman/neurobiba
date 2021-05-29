@@ -1,6 +1,10 @@
-.gitignore
-setup.cfg
-setup.py
-инструкция.txt
-/neurobiba.egg-info
-/dist
+# сначала все в игнор
+*
+
+# исключить из игнора файлы
+!example-use-neurobiba.py
+!LICENSE.TXT
+!README.md
+
+# исключить из игнора папку с содержимым
+!neurobiba/*
