@@ -1,5 +1,6 @@
 # neurobiba
 small collection of functions for neural networks
 
-Установка:
+
+Installation:
 pip istall neurobiba
