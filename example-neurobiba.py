@@ -6,7 +6,7 @@ syn = create_weights([2, 1]) #Создаем веса
 #Учим нейросеть определять что первое число больше второго
 for i in range(1000): 
     inp = [random(),random()]
-    syn = training(inp, int(inp[0]>inp[1]), syn) 
+    syn = training(inp, [int(inp[0]>inp[1])], syn) 
 
 #Тестируем обученную нейросеть
 t = 0
