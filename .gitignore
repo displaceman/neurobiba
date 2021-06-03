@@ -2,7 +2,7 @@
 *
 
 # исключить из игнора файлы
-!LICENSE.TXT
+!LICENSE
 !README.md
 !setup.py
 !example.py
