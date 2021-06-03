@@ -5,11 +5,9 @@
 !LICENSE.TXT
 !README.md
 !setup.py
-<<<<<<< HEAD
 !example.py
 !example_01.PNG
-=======
->>>>>>> 452d90459d8b73961b0a2bb94e2652c2f5c3126c
+
 
 # исключить из игнора папку с содержимым
 !neurobiba/*
