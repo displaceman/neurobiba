@@ -1,6 +1,6 @@
 from PIL import Image, ImageDraw
 from neurobiba import *
-from random import random as r
+from random import random
 
 #Создание картинки
 image = Image.new('RGB', (500, 500), 'white')   
@@ -14,7 +14,7 @@ weights = create_weights([3,16,1])
 input_neurons = []
 output_neurons = []
 for i in range(8):
-    input_neurons.append([r(), r(), 1])
+    input_neurons.append([random(), random(), 1])
     output_neurons.append(i%2)
 
 #Процесс обучения

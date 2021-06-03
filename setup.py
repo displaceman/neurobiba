@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='neurobiba',
@@ -8,5 +8,5 @@ setup(
     author_email='cumnaamys@gmail.com',
     author='displaceman',
     license='GPL',
-    packages=['pickle, numpy'],
+    packages=find_packages(),
     zip_safe=False)
