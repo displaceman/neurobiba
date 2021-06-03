@@ -5,6 +5,7 @@
 !example-use-neurobiba.py
 !LICENSE.TXT
 !README.md
+!setup.py
 
 # исключить из игнора папку с содержимым
 !neurobiba/*
