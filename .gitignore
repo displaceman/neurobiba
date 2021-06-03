@@ -5,9 +5,7 @@
 !LICENSE.TXT
 !README.md
 !setup.py
-!example.py
-!example_01.PNG
 
-
-# исключить из игнора папку с содержимым
+# исключить из игнора папки с содержимым
 !neurobiba/*
+!examples/*
