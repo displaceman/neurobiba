@@ -7,6 +7,7 @@ IMAGE_SIZE = WIDTH, HEIGHT = 500, 500
 DATA_AMOUNT = 8
 TRAINING_ITERATIONS = 5000
 
+
 #Создание весов
 weights = create_weights([3,16,1])
 
