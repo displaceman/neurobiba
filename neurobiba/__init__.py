@@ -131,7 +131,7 @@ weights = download_weights()
 def download_weights(file_name = 'weights'):
     try: 
         with open(f'{file_name}.dat','rb') as file:
-            return pickle.load(file)
+            return load(file)
     except:
         print('no file with saved weights')
 
@@ -146,7 +146,7 @@ save_weights(weights)
 """
 def save_weights(weights, file_name = 'weights'):
     with open(f'{file_name}.dat','wb') as file:
-        pickle.dump(weights, file)
+        dump(weights, file)
     print('file saved')
 
 
