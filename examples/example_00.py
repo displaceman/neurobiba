@@ -11,13 +11,13 @@ for i in range(1000):
     weights = training(input_layer, output_lauer, weights) 
 
 #Тестируем обученную нейросеть
-t = 0
+correct = 0
 for i in range(100):
     input_layer = [random(),random()]
     result = round(feed_forward(input_layer, weights)[0])
     if result == int(input_layer[0]>input_layer[1]): 
-        t+=1
+        correct += 1
 
 #Результат
-print('Нейросеть ответила верно в ', t, ' случаях из 100')
+print('Нейросеть ответила верно в ', correct, ' случаях из 100')
     
