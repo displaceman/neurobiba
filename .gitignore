@@ -7,5 +7,5 @@
 !setup.py
 
 # исключить из игнора папки с содержимым
-!neurobiba/
-!examples/
+!neurobiba/*
+!examples/*
