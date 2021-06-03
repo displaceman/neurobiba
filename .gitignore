@@ -1,11 +1,13 @@
-# сначала все в игнор
+# все в игнор
 *
 
 # исключить из игнора файлы
-!example-use-neurobiba.py
 !LICENSE.TXT
 !README.md
 !setup.py
+!example.py
+!example_01.PNG
+
 
 # исключить из игнора папку с содержимым
 !neurobiba/*
