@@ -1,11 +1,3 @@
-# все в игнор
-*
-
-# исключить из игнора файлы
-!LICENSE
-!README.md
-!setup.py
-
-# исключить из игнора папки с содержимым
-!neurobiba/*
-!examples/*
+dist/*
+neurobiba.egg-info/*
+setup.cfg
