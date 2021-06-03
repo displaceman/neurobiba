@@ -1,19 +1,38 @@
+from PIL import Image, ImageDraw
 from neurobiba import *
-from random import random 
+from random import random as r
 
-weights = create_weights([2, 1]) #Создаем веса
+#Создание картинки
+image = Image.new('RGB', (500, 500), 'white')   
+width, height = image.size
+draw = ImageDraw.Draw(image)
 
-#Учим нейросеть определять что первое число больше второго
-for i in range(1000): 
-    input_layer = [random(),random()]
-    weights = training(input_layer, [int(input_layer[0]>input_layer[1])], weights) 
+#Создание весов
+weights = create_weights([3,16,1])
 
-#Тестируем обученную нейросеть
-t = 0
-for i in range(100):
-    input_layer = [random(),random()]
-    result= round(feed_forward(input_layer, weights)[0])
-    if result== int(input_layer[0]>input_layer[1]): t+=1
+#Создание датасета
+input_neurons = []
+output_neurons = []
+for i in range(8):
+    input_neurons.append([r(), r(), 1])
+    output_neurons.append(i%2)
 
-print('Нейросеть ответила верно в ', t, ' случаях из 100')
-    
+#Процесс обучения
+for i in range(3000):
+    for ind in range(len(input_neurons)):
+        weights = training(input_neurons[ind], output_neurons[ind], weights)
+
+#Отрисовка поля
+for x in range(width):
+    for y in range(height):
+        c = int(round(feed_forward([x/width, y/height, 1], weights)[0])*255)
+        draw.point((x, y), (c,c,c))
+
+#Отрисовка точек
+for ind, i in enumerate(input_neurons):
+    x, y = int(i[0]*width), int(i[1]*height)
+    c = int(output_neurons[ind]*255)
+    draw.ellipse((x-5, y-5, x+5, y+5), fill = (c,c,c), outline = tuple(map(lambda a: 255-a, (c,c,c))))
+
+#Вывод изображения
+image.show()
