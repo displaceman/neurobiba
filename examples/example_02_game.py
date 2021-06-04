@@ -59,7 +59,8 @@ while True:
         for y in range(HEIGHT):
             result = feed_forward([x / WIDTH, y / HEIGHT], weights)
             color = tuple([result * 255] * 3)
-            screen.fill(color, (x * PIXEL, y * PIXEL, PIXEL, PIXEL))
+            rect = (x * PIXEL, y * PIXEL, PIXEL, PIXEL)
+            screen.fill(color, rect)
 
     screen.fill(ACCENT_COLOR, (5, 5, 24, 24))
     color = (255, 255, 255) if active else (0, 0, 0)
