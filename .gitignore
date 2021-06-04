@@ -1,5 +1,4 @@
 dist/*
 neurobiba.egg-info/*
-setup.cfg
 инструкция.txt
 neurobiba/__pycache__
