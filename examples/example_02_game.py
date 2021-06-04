@@ -13,7 +13,7 @@ pg.init()
 clock = pg.time.Clock()
 screen = pg.display.set_mode(SCREEN_SIZE)
 
-weights = create_weights([2, 1])
+weights = create_weights([2, 10, 1])
 
 # list of { "point": [float, float], "value": bool }
 dataset = []
@@ -27,8 +27,8 @@ while True:
             sys.exit()
         if event.type == pg.MOUSEBUTTONUP:
             x, y = pg.mouse.get_pos()
-            x = x / WIDTH / PX
-            y = y / HEIGHT / PX
+            x = x / SCR_WIDTH
+            y = y / SCR_HEIGHT
             dataset.append({"point": (x, y), "value": active})
             print(dataset[-1])
         if event.type == pg.KEYDOWN:
@@ -57,6 +57,7 @@ while True:
         pg.draw.circle(screen, (255, 0, 0), (x, y), 7)
         pg.draw.circle(screen, color, (x, y), 5)
 
+    screen.fill((255, 0, 0), (4, 4, 22, 22))
     color = (255, 255, 255) if active else (0, 0, 0)
     screen.fill(color, (5, 5, 20, 20))
 
