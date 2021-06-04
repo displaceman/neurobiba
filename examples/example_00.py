@@ -4,7 +4,7 @@ from random import random
 #Создаем веса
 weights = create_weights([2, 1]) 
 
-#Учим нейросеть определять что первое число больше второго
+#Учим нейросеть определять, больше ли первое число второго
 for i in range(1000): 
     first, second = random(), random()
     result = int(first > second)
