@@ -17,7 +17,7 @@ def create_weights(l_size):
     l_size это список слоев с количеством их нейронов.
 
     Пример использования функции:
-    >>> weights = create_weights([3, 10, 10 ,2])
+    `weights = create_weights([3, 10, 10 ,2])`
 
     Здесь три нейрона на входном слое, 
     два промежуточных слоя по 10 нейронов и 2 нейрона на выходе.
@@ -36,18 +36,17 @@ def training(input_layer, correct_output, weights, alpha=0.9):
     Ее нужно вызывать в цикле столько раз сколько потребуется для обучения.
 
     Пример использования функции:
-    >>> for i in range(1000):
-            weights = training(input_layer, correct_output, weights)
+    `for i in range(1000): weights = training(input_layer, correct_output, weights)`
 
     `input_layer` - это список нейронов входного слоя. 
     Они должны находится в диапазоне от `0` до `1`.
     Например:
-    >>> input_layer = [1, 0, 0.7]
+    `input_layer = [1, 0, 0.7]`
 
     correct_output это список правильных выходов для заданных входов.
     Они должны находится в диапазоне от `0` до `1`.
     Например:
-    >>> correct_output = [0.5, 1]
+    `correct_output = [0.5, 1]`
 
     `weights` - это веса нейросети, которые вы создали ранее
 
