@@ -2,25 +2,23 @@ from numpy import (exp, random, array, dot)
 from pickle import (dump, load)
 
 
-def deriv_sigmoid(x, alpha): 
-    """Функция deriv_sigmoid это производная сигмоиды, она используется другими функциями библиотеки. """
-    return (x *(1-x))*alpha 
+def deriv_sigmoid(x, alpha):
+    """Производная сигмоиды. Используется для обучения."""
+    return (x * (1-x))*alpha
 
 
-def sigmoid(x): 
-    """Функция sigmoid используется другими функциями библиотеки в качестве функции активации. """
+def sigmoid(x):
+    """Сигмоида."""
     return 1/(1+exp(-x))
 
 
-
-def create_weights(l_size): 
+def create_weights(l_size):
     """
-    Функция create_weights нужна для создания весов. 
-
     l_size это список слоев с количеством их нейронов.
 
     Пример использования функции:
-    weights = create_weights([3,10,10,2])
+    >>> weights = create_weights([3, 10, 10 ,2])
+
     Здесь три нейрона на входном слое, 
     два промежуточных слоя по 10 нейронов и 2 нейрона на выходе.
     """
@@ -30,93 +28,92 @@ def create_weights(l_size):
     return weights
 
 
-
 def training(input_layer, correct_output, weights, alpha=0.9):
     """
-    Функция training нужна для обучения нейросети 
+    Функция для обучения нейросети 
     методом обратного распространения ошибки.
     Возвращает измененные веса. 
     Ее нужно вызывать в цикле столько раз сколько потребуется для обучения.
 
     Пример использования функции:
-    for i in range(1000):
-        weights = training(input_layer, correct_output, weights)
-        
-    input_layer это список нейронов входного слоя. 
-    Они должны находится в диапазоне от 0 до 1.
-    Например: input_layer = [1, 0, 0.7]
+    >>> for i in range(1000):
+            weights = training(input_layer, correct_output, weights)
+
+    `input_layer` - это список нейронов входного слоя. 
+    Они должны находится в диапазоне от `0` до `1`.
+    Например:
+    >>> input_layer = [1, 0, 0.7]
 
     correct_output это список правильных выходов для заданных входов.
-    Они должны находится в диапазоне от 0 до 1.
-    Например: correct_output = [0.5, 1]
+    Они должны находится в диапазоне от `0` до `1`.
+    Например:
+    >>> correct_output = [0.5, 1]
 
-    weights это веса нейросети, которые вы создали ранее
+    `weights` - это веса нейросети, которые вы создали ранее
 
-    alpha это коэфициент скорости обучения. 
+    `alpha` - это коэфициент скорости обучения. 
     Его оптимальное значение меняется в зависимости от задачи.
     """
-    
+
     l = [array([input_layer])]
     d = len(weights)
-    
+
     for i in range(d):
         l.append(sigmoid(dot(l[-1], weights[i])))
-       
+
     l_error = []
     l_delta = []
- 
-    l_error.append(correct_output - l[-1] )
-    l_delta.append(l_error[-1] * deriv_sigmoid(l[-1], alpha) )
+
+    l_error.append(correct_output - l[-1])
+    l_delta.append(l_error[-1] * deriv_sigmoid(l[-1], alpha))
 
     for i in range(d-1):
         l_error.append(l_delta[i].dot(weights[d-1-i].T))
         l_delta.append(l_error[-1] * deriv_sigmoid(l[d-1-i], alpha))
-    
+
     for ind in range(len(weights)):
         weights[ind] += l[ind].T.dot(l_delta[-1-ind])
-        
+
     return weights
 
 
-
-def feed_forward(input_layer, weights): 
+def feed_forward(input_layer, weights):
     """
-    Функция feed_forward нужна для получения ответа нейросети.
+    Функция для получения ответа нейросети.
     Возвращает список выходных нейронов.
 
     Пример использования:
-    r = result(input_layer, weights)
+    `result = feed_forward(input_layer, weights)`
 
-    input_layer это список входных нейронов.
+    `input_layer` - это список входных нейронов.
 
-    weights это веса нейросети, которые вы создали ранее.
+    `weights` - это веса нейросети, которые вы создали ранее.
     """
-    
+
     l = [array([input_layer])]
     d = len(weights)
-    
+
     for i in range(d):
         l.append(sigmoid(dot(l[-1], weights[i])))
 
     return l[-1][0]
 
 
-
 def feed_reverse(input_layer, weights):
     """
-    Функция feed_reverse работает так же как result,
+    Эта функция работает так же, как `feed_forward`,
     но проводит сигнал через нейросеть в обратном направлении.
-    В нее в качестве входного слоя подают то что ранее считалось выходным слоем 
+    В нее в качестве входного слоя подают то, что ранее считалось выходным слоем.
 
 
     Пример использования:
-    r = reverse(input_layer, weights)
+    `r = reverse(input_layer, weights)`
     """
-    
+
     weightsr = list(reversed(weights))
     for ind, i in enumerate(weightsr):
         weightsr[ind] = weightsr[ind].T
-        
+
     l = [array([input_layer])]
     d = len(weightsr)
 
@@ -125,37 +122,33 @@ def feed_reverse(input_layer, weights):
     return l[-1][0]
 
 
-
-def download_weights(file_name = 'weights'):
+def download_weights(file_name='weights'):
     """
-    Функция download_weights нужна для загрузки весов из файла
+    Загрузка весов из файла.
 
     Пример использования:
-    weights = download_weights()
+    `weights = download_weights()`
 
-    В качестве аргумента file_name можно указать имя файла .dat без указания формата.
+    В качестве аргумента `file_name` можно указать имя файла `.dat` без указания формата.
     """
-    
-    try: 
-        with open(f'{file_name}.dat','rb') as file:
+
+    try:
+        with open(f'{file_name}.dat', 'rb') as file:
             return load(file)
     except:
         print('no file with saved weights')
 
 
-
-def save_weights(weights, file_name = 'weights'):
+def save_weights(weights, file_name='weights'):
     """
-    Функция save_weights нужна для сохранения весов в файл.
+    Схранение весов в файл.
 
     Пример использования:
-    save_weights(weights)
+    `save_weights(weights)`
 
-    В качестве аргумента file_name можно указать имя файла .dat без указания формата.
+    В качестве аргумента `file_name` можно указать имя файла `.dat` без указания формата.
     """
-    
-    with open(f'{file_name}.dat','wb') as file:
+
+    with open(f'{file_name}.dat', 'wb') as file:
         dump(weights, file)
     print('file saved')
-
-
