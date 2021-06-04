@@ -74,8 +74,6 @@ while True:
     write_on_screen('X - switch color', 30, 25)
     write_on_screen('DELETE - clear dataset', 30, 40)
     write_on_screen('N - reset weights', 30, 55)
-    
-
 
     pg.display.flip()
 
