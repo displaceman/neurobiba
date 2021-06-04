@@ -3,9 +3,9 @@ import sys
 
 from neurobiba import *
 
-WIDTH, HEIGHT = 30, 30
+WIDTH, HEIGHT = 40, 40
 
-PX = 15
+PX = 10
 
 SCREEN_SIZE = SCR_WIDTH, SCR_HEIGHT = WIDTH * PX, HEIGHT * PX
 
@@ -13,7 +13,7 @@ pg.init()
 clock = pg.time.Clock()
 screen = pg.display.set_mode(SCREEN_SIZE)
 
-weights = create_weights([2, 5, 5, 1])
+weights = create_weights([2, 1])
 
 # list of { "point": [float, float], "value": bool }
 dataset = []
@@ -30,8 +30,14 @@ while True:
             x = x / WIDTH / PX
             y = y / HEIGHT / PX
             dataset.append({"point": (x, y), "value": active})
-            active = not active
             print(dataset[-1])
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_n:
+                weights = create_weights([2, 10, 10, 10, 1])
+            if event.key == pg.K_x:
+                active = not active
+            if event.key == pg.K_DELETE:
+                dataset = []
 
     for _ in range(50):
         for data in dataset:
@@ -50,6 +56,9 @@ while True:
         y = data["point"][1] * HEIGHT * PX
         pg.draw.circle(screen, (255, 0, 0), (x, y), 7)
         pg.draw.circle(screen, color, (x, y), 5)
+
+    color = (255, 255, 255) if active else (0, 0, 0)
+    screen.fill(color, (5, 5, 20, 20))
 
     pg.display.flip()
     clock.tick(60)
