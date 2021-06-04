@@ -66,18 +66,18 @@ while True:
     color = (255, 255, 255) if active else (0, 0, 0)
     screen.fill(color, (7, 7, 20, 20))
 
-    draw_text(screen, 35, 2, basicFont, [
-        'MOUSE : set point',
-        'X : switch color',
-        'DEL : clear dataset',
-        'N : reset weights'
-    ])
-
     for data in dataset:
         color = (255, 255, 255) if data["value"] else (0, 0, 0)
         x = int(data["point"][0] * WIDTH * PIXEL)
         y = int(data["point"][1] * HEIGHT * PIXEL)
         pg.draw.circle(screen, ACCENT_COLOR, (x, y), 7)
         pg.draw.circle(screen, color, (x, y), 5)
+
+    draw_text(screen, 35, 2, basicFont, [
+        'MOUSE : set point',
+        'X : switch color',
+        'DEL : clear dataset',
+        'N : reset weights'
+    ])
 
     pg.display.flip()
