@@ -7,8 +7,8 @@ weights = create_weights([2, 1])
 #Учим нейросеть определять что первое число больше второго
 for i in range(1000): 
     input_layer = [random(),random()]
-    output_lauer = [int(input_layer[0]>input_layer[1])]
-    weights = training(input_layer, output_lauer, weights) 
+    output_layer = [int(input_layer[0]>input_layer[1])]
+    weights = training(input_layer, output_layer, weights) 
 
 #Тестируем обученную нейросеть
 correct = 0
