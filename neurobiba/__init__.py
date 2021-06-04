@@ -22,10 +22,7 @@ def create_weights(l_size):
     Здесь три нейрона на входном слое, 
     два промежуточных слоя по 10 нейронов и 2 нейрона на выходе.
     """
-    weights = []
-    for i in range(len(l_size)-1):
-        weights.append(2*random.random((l_size[i], l_size[i+1])) - 1)
-    return weights
+    return [2*random.random((l_size[i], l_size[i+1])) - 1 for i in range(len(l_size)-1)]
 
 
 def training(input_layer, correct_output, weights, alpha=0.9):
