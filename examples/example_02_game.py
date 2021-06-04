@@ -5,9 +5,11 @@ from neurobiba import *
 
 WIDTH, HEIGHT = 40, 40
 
-PX = 10
+PIXEL = 10
 
-SCREEN_SIZE = SCR_WIDTH, SCR_HEIGHT = WIDTH * PX, HEIGHT * PX
+ACCENT_COLOR = 200, 0, 0
+
+SCREEN_SIZE = SCR_WIDTH, SCR_HEIGHT = WIDTH * PIXEL, HEIGHT * PIXEL
 
 pg.init()
 screen = pg.display.set_mode(SCREEN_SIZE)
@@ -20,13 +22,13 @@ dataset = []
 
 active = False
 
-basicFont = pg.font.SysFont('arial', 15, bold=True)
-def write_on_screen (text, x, y):
-    text = basicFont.render(text, True, (255, 0, 0))
-    textRect = text.get_rect()
-    textRect.left = x
-    textRect.centery = y
-    screen.blit(text, textRect)
+basicFont = pg.font.SysFont(pg.font.get_fonts()[0], 15, bold=True)
+
+
+def draw_text(surface, x, y, font, text):
+    for i, string in enumerate(text):
+        text = font.render(string, True, ACCENT_COLOR)
+        surface.blit(text, (x, y + i * 15))
 
 
 while True:
@@ -57,23 +59,24 @@ while True:
         for y in range(HEIGHT):
             result = feed_forward([x / WIDTH, y / HEIGHT], weights)
             color = tuple([result * 255] * 3)
-            screen.fill(color, (x * PX, y * PX, PX, PX))
+            screen.fill(color, (x * PIXEL, y * PIXEL, PIXEL, PIXEL))
 
-    screen.fill((255, 0, 0), (4, 4, 22, 22))
+    screen.fill(ACCENT_COLOR, (5, 5, 24, 24))
     color = (255, 255, 255) if active else (0, 0, 0)
-    screen.fill(color, (5, 5, 20, 20))
+    screen.fill(color, (7, 7, 20, 20))
 
-    write_on_screen('MOUSE : set point', 30, 10)
-    write_on_screen('X : switch color', 30, 25)
-    write_on_screen('DEL : clear dataset', 30, 40)
-    write_on_screen('N : reset weights', 30, 55)
+    draw_text(screen, 35, 2, basicFont, [
+        'MOUSE : set point',
+        'X : switch color',
+        'DEL : clear dataset',
+        'N : reset weights'
+    ])
 
     for data in dataset:
         color = (255, 255, 255) if data["value"] else (0, 0, 0)
-        x = int(data["point"][0] * WIDTH * PX)
-        y = int(data["point"][1] * HEIGHT * PX)
-        pg.draw.circle(screen, (255, 0, 0), (x, y), 7)
+        x = int(data["point"][0] * WIDTH * PIXEL)
+        y = int(data["point"][1] * HEIGHT * PIXEL)
+        pg.draw.circle(screen, ACCENT_COLOR, (x, y), 7)
         pg.draw.circle(screen, color, (x, y), 5)
 
     pg.display.flip()
-
