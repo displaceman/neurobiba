@@ -2,6 +2,10 @@
 
 ![visitors](https://visitor-badge.laobi.icu/badge?page_id=displaceman.neurobiba)
 
+other languages:
+
+- [RU](./README.ru.md)
+
 small collection of functions for neural networks.
 
 very easy to use!
