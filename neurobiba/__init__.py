@@ -106,7 +106,7 @@ def feed_reverse(input_layer, weights):
 
 
     Пример использования:
-    `r = reverse(input_layer, weights)`
+    `r = feed_reverse(input_layer, weights)`
     """
 
     weightsr = list(reversed(weights))
