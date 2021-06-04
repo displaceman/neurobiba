@@ -1,5 +1,11 @@
-from numpy import (exp, random, array, dot)
+from numpy import (exp, random, array, dot, append)
 from pickle import (dump, load)
+
+
+class Weights(list):
+    def __init__(self, size:list, bias:bool):
+        self.bias = bias
+        super().__init__([2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)])
 
 
 def deriv_sigmoid(x, alpha):
@@ -12,17 +18,19 @@ def sigmoid(x):
     return 1/(1+exp(-x))
 
 
-def create_weights(l_size):
+def create_weights(size, bias=False):
     """
-    l_size это список слоев с количеством их нейронов.
-
+    size это список слоев с количеством их нейронов.
+    
+    bias этот флаг добавляет к каждому слою нейрон смещения
+    
     Пример использования функции:
     `weights = create_weights([3, 10, 10 ,2])`
 
     Здесь три нейрона на входном слое, 
     два промежуточных слоя по 10 нейронов и 2 нейрона на выходе.
-    """
-    return [2*random.random((l_size[i], l_size[i+1])) - 1 for i in range(len(l_size)-1)]
+    """ 
+    return  Weights(size, bias)
 
 
 def training(input_layer, correct_output, weights, alpha=0.9):
@@ -55,6 +63,8 @@ def training(input_layer, correct_output, weights, alpha=0.9):
     d = len(weights)
 
     for i in range(d):
+        if weights.bias:
+            l[-1] = array([append(l[-1], 1)])
         l.append(sigmoid(dot(l[-1], weights[i])))
 
     l_error = []
@@ -67,8 +77,13 @@ def training(input_layer, correct_output, weights, alpha=0.9):
         l_error.append(l_delta[i].dot(weights[d-1-i].T))
         l_delta.append(l_error[-1] * deriv_sigmoid(l[d-1-i], alpha))
 
-    for ind in range(len(weights)):
-        weights[ind] += l[ind].T.dot(l_delta[-1-ind])
+    if weights.bias:
+        for ind in range(d-1):
+            weights[ind] += l[ind].T.dot(array([l_delta[-1-ind][0][:-1]]))
+        weights[d-1] += l[d-1].T.dot(l_delta[-d])
+    else:
+        for ind in range(d):
+            weights[ind] += l[ind].T.dot(l_delta[-1-ind])
 
     return weights
 
@@ -90,6 +105,8 @@ def feed_forward(input_layer, weights):
     d = len(weights)
 
     for i in range(d):
+        if weights.bias:
+            l[-1] = array([append(l[-1], 1)])
         l.append(sigmoid(dot(l[-1], weights[i])))
 
     return l[-1][0]
@@ -100,7 +117,8 @@ def feed_reverse(input_layer, weights):
     Эта функция работает так же, как `feed_forward`,
     но проводит сигнал через нейросеть в обратном направлении.
     В нее в качестве входного слоя подают то, что ранее считалось выходным слоем.
-
+    
+    НЕ РАБОТАЕТ ЕСЛИ ПАРАМЕТР bias==True
 
     Пример использования:
     `r = feed_reverse(input_layer, weights)`
