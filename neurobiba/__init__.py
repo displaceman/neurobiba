@@ -2,12 +2,14 @@ from numpy import (exp, random, array, dot, append)
 from pickle import (dump, load)
 
 
-class Weights(list):
-    def __init__(self, size, bias=False):
+class Weights():
+    def __init__(self, size=[1,1], bias=False, name="weights"):
         """
         size это список слоев с количеством их нейронов.
         
         bias этот флаг добавляет к каждому слою нейрон смещения
+        
+        name это имя файла .dat в который будет сохранять метод save
         
         Пример использования функции:
         `weights = Weights([3, 10, 10 ,2])`
@@ -15,8 +17,11 @@ class Weights(list):
         Здесь три нейрона на входном слое, 
         два промежуточных слоя по 10 нейронов и 2 нейрона на выходе.
         """ 
+ 
         self.bias = bias
-        super().__init__([2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)])
+        self.name = name
+        self.weights = [2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)]
+
 
     def deriv_sigmoid(self, x, alpha):
         """Производная сигмоиды. Используется для обучения."""
@@ -25,6 +30,10 @@ class Weights(list):
     def sigmoid(self, x):
         """Сигмоида."""
         return 1/(1+exp(-x))
+    
+    def file_name(self, name):
+        """Меняет имя файла по умолчанию в который записываются веса"""
+        self.name = name
 
     def training(self, input_layer, correct_output, alpha=0.9):
         """
@@ -52,12 +61,12 @@ class Weights(list):
         """
 
         l = [array([input_layer])]
-        d = len(self)
+        d = len(self.weights)
 
         for i in range(d):
             if self.bias:
                 l[-1] = array([append(l[-1], 1)])
-            l.append(self.sigmoid(dot(l[-1], self[i])))
+            l.append(self.sigmoid(dot(l[-1], self.weights[i])))
 
         l_error = []
         l_delta = []
@@ -66,16 +75,16 @@ class Weights(list):
         l_delta.append(l_error[-1] * self.deriv_sigmoid(l[-1], alpha))
 
         for i in range(d-1):
-            l_error.append(l_delta[i].dot(self[d-1-i].T))
+            l_error.append(l_delta[i].dot(self.weights[d-1-i].T))
             l_delta.append(l_error[-1] * self.deriv_sigmoid(l[d-1-i], alpha))
 
         if self.bias:
             for ind in range(d-1):
-                self[ind] += l[ind].T.dot(array([l_delta[-1-ind][0][:-1]]))
-            self[d-1] += l[d-1].T.dot(l_delta[-d])
+                self.weights[ind] += l[ind].T.dot(array([l_delta[-1-ind][0][:-1]]))
+            self.weights[d-1] += l[d-1].T.dot(l_delta[-d])
         else:
             for ind in range(d):
-                self[ind] += l[ind].T.dot(l_delta[-1-ind])
+                self.weights[ind] += l[ind].T.dot(l_delta[-1-ind])
 
     def feed_forward(self, input_layer):
         """
@@ -89,12 +98,12 @@ class Weights(list):
         """
 
         l = [array([input_layer])]
-        d = len(self)
+        d = len(self.weights)
 
         for i in range(d):
             if self.bias:
                 l[-1] = array([append(l[-1], 1)])
-            l.append(self.sigmoid(dot(l[-1], self[i])))
+            l.append(self.sigmoid(dot(l[-1], self.weights[i])))
 
         return l[-1][0]
 
@@ -111,7 +120,7 @@ class Weights(list):
         `r = weights.feed_reverse(input_layer)`
         """
 
-        weightsr = list(reversed(self))
+        weightsr = list(reversed(self.weights))
         for ind, i in enumerate(weightsr):
             weightsr[ind] = weightsr[ind].T
 
@@ -123,24 +132,30 @@ class Weights(list):
         return l[-1][0]
 
 
-    def download_weights(self, file_name='weights'):
+    def load(self, file_name=None):
         """
         Загрузка весов из файла.
 
         Пример использования:
-        `weights.download_weights()`
+        `weights = Weights.download()`
 
         В качестве аргумента `file_name` можно указать имя файла `.dat` без указания формата.
         """
+        if file_name is None:
+            file_name = self.name
 
         try:
             with open(f'{file_name}.dat', 'rb') as file:
-                self = load(file)
+                f = load(file)
+                self.bias = f.bias
+                self.name = f.name
+                self.weights = f.weights
+                print('file downloaded')
         except:
             print('no file with saved weights')
 
 
-    def save_weights(self, file_name='weights'):
+    def save(self, file_name=None):
         """
         Схранение весов в файл.
 
@@ -150,6 +165,9 @@ class Weights(list):
         В качестве аргумента `file_name` можно указать имя файла `.dat` без указания формата.
         """
 
+        if file_name is None:
+            file_name = self.name
+        
         with open(f'{file_name}.dat', 'wb') as file:
             dump(self, file)
         print('file saved')
