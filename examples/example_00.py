@@ -1,20 +1,21 @@
-from neurobiba import *
+import neurobiba as nb
+
 from random import random 
 
 #Создаем веса
-weights = create_weights([2, 1]) 
+weights = nb.Weights([2, 1]) 
 
 #Учим нейросеть определять, больше ли первое число второго
 for _ in range(1000): 
     first, second = random(), random()
     result = int(first > second)
-    weights = training([first, second], [result], weights) 
+    weights.training([first, second], [result]) 
 
 #Тестируем обученную нейросеть
 correct = 0
 for _ in range(100):
     first, second = random(), random()
-    result = round(feed_forward([first, second], weights)[0])
+    result = round(weights.feed_forward([first, second])[0])
     if result == int(first > second): 
         correct += 1
 

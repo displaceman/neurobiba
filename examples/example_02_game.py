@@ -1,7 +1,8 @@
+import neurobiba as nb
+
 import pygame as pg
 import pygame_gui as pgui
 
-from neurobiba import *
 
 WIDTH, HEIGHT = 40, 40
 PIXEL = 10
@@ -34,7 +35,7 @@ switch_color_btn = pgui.elements.UIButton(relative_rect=pg.Rect((5, 110), (190, 
                                           text='switch color',
                                           manager=manager)
 
-weights = create_weights(WEIGHTS_SHAPE)
+weights = nb.Weights(WEIGHTS_SHAPE)
 
 # list of { "point": [float, float], "value": bool }
 dataset = []
@@ -63,7 +64,7 @@ while is_running:
         if event.type == pg.USEREVENT:
             if event.user_type == pgui.UI_BUTTON_PRESSED:
                 if event.ui_element == reset_weights_btn:
-                    weights = create_weights(WEIGHTS_SHAPE)
+                    weights = nb.Weights(WEIGHTS_SHAPE)
                 if event.ui_element == clear_data_btn:
                     dataset = []
                 if event.ui_element == pop_data_btn:
@@ -91,13 +92,13 @@ while is_running:
     for _ in range(50):
         for data in dataset:
             point = data["point"]
-            weights = training(point, data["value"], weights)
+            weights.training(point, data["value"])
 
     image = pg.Surface((WIDTH * PIXEL, HEIGHT * PIXEL))
 
     for x in range(WIDTH):
         for y in range(HEIGHT):
-            result = feed_forward([x / WIDTH, y / HEIGHT], weights)
+            result = weights.feed_forward([x / WIDTH, y / HEIGHT])
             color = tuple([result * 255] * 3)
             rect = (x * PIXEL, y * PIXEL, PIXEL, PIXEL)
             # window_surface.fill(color, rect)
