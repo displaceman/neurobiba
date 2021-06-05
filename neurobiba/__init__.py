@@ -1,7 +1,6 @@
 from numpy import (exp, random, array, dot, append)
 from pickle import (dump, load)
 
-
 class Weights():
     def __init__(self, size=[1,1], bias=False, name="weights"):
         """
@@ -30,10 +29,6 @@ class Weights():
     def sigmoid(self, x):
         """Сигмоида."""
         return 1/(1+exp(-x))
-    
-    def file_name(self, name):
-        """Меняет имя файла по умолчанию в который записываются веса"""
-        self.name = name
 
     def training(self, input_layer, correct_output, alpha=0.9):
         """
@@ -132,42 +127,38 @@ class Weights():
         return l[-1][0]
 
 
-    def load(self, file_name=None):
-        """
-        Загрузка весов из файла.
-
-        Пример использования:
-        `weights = Weights.download()`
-
-        В качестве аргумента `file_name` можно указать имя файла `.dat` без указания формата.
-        """
-        if file_name is None:
-            file_name = self.name
-
-        try:
-            with open(f'{file_name}.dat', 'rb') as file:
-                f = load(file)
-                self.bias = f.bias
-                self.name = f.name
-                self.weights = f.weights
-                print('file downloaded')
-        except:
-            print('no file with saved weights')
 
 
-    def save(self, file_name=None):
-        """
-        Схранение весов в файл.
+def _load(file_name="weights"):
+    """
+    Загрузка весов из файла.
 
-        Пример использования:
-        `weights.save_weights()`
+    Пример использования:
+    `weights = _load()`
 
-        В качестве аргумента `file_name` можно указать имя файла `.dat` без указания формата.
-        """
+    В качестве аргумента `file_name` можно указать имя файла
+    """
 
-        if file_name is None:
-            file_name = self.name
-        
-        with open(f'{file_name}.dat', 'wb') as file:
-            dump(self, file)
+    try:
+        with open(file_name, 'rb') as file:
+            print('file downloaded')
+            return load(file)
+    except:
+        print('no file with saved weights')
+
+
+def _save(weights, file_name=None):
+    """
+    Схранение весов в файл.
+
+    Пример использования:
+    `_save(weights)`
+
+    В качестве аргумента `file_name` можно указать имя файла
+    """
+    if file_name is None:
+        file_name = weights.name
+
+    with open(file_name, 'wb') as file:
+        dump(weights, file)
         print('file saved')
