@@ -7,9 +7,6 @@ from neurobiba.activations import *
 _DEFAULT_NAME = 'weights'
 
 
-"""Дефолтное имя для файла весов"""
-_DEFAULT_NAME = 'weights'
-
 class Weights():
     def __init__(self, size=[1, 1], bias=False, name=_DEFAULT_NAME, activation=SIGMOID):
         """
@@ -18,7 +15,7 @@ class Weights():
         bias этот флаг добавляет к каждому слою нейрон смещения
 
         name это имя файла .dat в который будет сохранять метод save
-        
+
         Пример:
         `weights = Weights([3, 10, 10 ,2])`
 
@@ -79,12 +76,12 @@ class Weights():
         l_delta = []
 
         l_error.append(correct_output - l[-1])
-        l_delta.append(l_error[-1] * self.activation.deriv(l[-1], alpha))
+        l_delta.append(l_error[-1] * self.activation.deriv(l[-1]) * alpha)
 
         for i in range(d-1):
             l_error.append(l_delta[i].dot(self.weights[d-1-i].T))
             l_delta.append(
-                l_error[-1] * self.activation.deriv(l[d-1-i], alpha))
+                l_error[-1] * self.activation.deriv(l[d-1-i]) * alpha)
 
         if self.bias:
             for ind in range(d-1):

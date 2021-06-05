@@ -2,3 +2,4 @@ dist/*
 neurobiba.egg-info/*
 инструкция.txt
 **/__pycache__
+**/.tmp
