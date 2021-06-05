@@ -147,7 +147,7 @@ def load_weights(file_name=_DEFAULT_NAME):
             print('file loaded')
             return load(file)
     except:
-        print(f'no file {file_name}')
+        print(f'ERROR: no file {file_name}')
 
 
 def save_weights(weights, file_name=None):
