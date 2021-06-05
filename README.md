@@ -13,6 +13,7 @@ very easy to use!
 Installation:
 
 ```
+```
 pip install neurobiba
 ```
 
@@ -34,7 +35,7 @@ weights = Weights([2, 1]) # 2 input neurons and 1 output
 for i in range(10000): # train 10000 times
     a, b = random(), random() # a and b is a random numbers
     output = int(a > b) # if a > b then answer is 1, else 0
-    weights.training([a, b], [output]) # train
+    weights.train([a, b], [output]) # train
 ```
 
 3. enjoy

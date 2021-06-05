@@ -20,7 +20,7 @@ output_neurons = [i%2 for i in range(DATA_AMOUNT)]
 #Процесс обучения
 for _ in range(TRAINING_ITERATIONS):
     for i in range(len(input_neurons)):
-        weights.training(input_neurons[i], output_neurons[i])
+        weights.train(input_neurons[i], output_neurons[i])
 
 #Создание картинки
 image = Image.new('RGB', IMAGE_SIZE, 'white')   

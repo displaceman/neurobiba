@@ -92,7 +92,7 @@ while is_running:
     for _ in range(50):
         for data in dataset:
             point = data["point"]
-            weights.training(point, data["value"])
+            weights.train(point, data["value"])
 
     image = pg.Surface((WIDTH * PIXEL, HEIGHT * PIXEL))
 

@@ -9,7 +9,7 @@ weights = nb.Weights([2, 1])
 for _ in range(1000): 
     first, second = random(), random()
     result = int(first > second)
-    weights.training([first, second], [result]) 
+    weights.train([first, second], [result]) 
 
 #Тестируем обученную нейросеть
 correct = 0

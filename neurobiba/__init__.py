@@ -36,7 +36,7 @@ class Weights():
         """Сигмоида."""
         return 1/(1+exp(-x))
 
-    def training(self, input_layer, correct_output, alpha=0.9):
+    def train(self, input_layer, correct_output, alpha=0.9):
         """
         Функция для обучения нейросети 
         методом обратного распространения ошибки.

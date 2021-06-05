@@ -36,7 +36,7 @@ weights = Weights([2, 1]) # 2 входа и 1 выход
 for i in range(10000): # тренируем 10000 раз
     a, b = random(), random() # 'a' и 'b' - случайные числа
     output = int(a > b) # если 'a' > 'b' то ответ 1, иначе 0
-    weights.training([a, b], [output]) # тренируем
+    weights.train([a, b], [output]) # тренируем
 ```
 
 3. радуемся обученной нейросети!
