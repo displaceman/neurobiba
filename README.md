@@ -13,7 +13,6 @@ very easy to use!
 Installation:
 
 ```
-```
 pip install neurobiba
 ```
 
