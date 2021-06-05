@@ -3,8 +3,12 @@ from pickle import (dump, load)
 from neurobiba.activations import *
 
 
+"""Дефолтное имя для файла весов"""
+_DEFAULT_NAME = 'weights'
+
+
 class Weights():
-    def __init__(self, size=[1, 1], bias=False, name="weights", activation=SIGMOID):
+    def __init__(self, size=[1, 1], bias=False, name=_DEFAULT_NAME, activation=SIGMOID):
         """
         size это список слоев с количеством их нейронов.
 
@@ -42,7 +46,7 @@ class Weights():
         Меняет веса.
         Ее нужно вызывать в цикле столько раз сколько потребуется для обучения.
 
-        Пример использования функции:
+        Пример:
         `for i in range(1000): 
             weights.training(input_layer, correct_output)`
 
@@ -143,30 +147,30 @@ def feed_reverse_with_bias(_weights, _input_layer):
         "feed_reverse работает только с весами без биаса")
 
 
-def load(file_name="weights"):
+def load_weights(file_name=_DEFAULT_NAME):
     """
     Загрузка весов из файла.
 
     Пример использования:
-    `weights = load()`
+    `weights = load_weights()`
 
     В качестве аргумента `file_name` можно указать имя файла
     """
 
     try:
         with open(file_name, 'rb') as file:
-            print('file downloaded')
+            print('file loaded')
             return load(file)
     except:
-        print('no file with saved weights')
+        print(f'ERROR: no file {file_name}')
 
 
-def save(weights, file_name=None):
+def save_weights(weights, file_name=None):
     """
     Схранение весов в файл.
 
     Пример использования:
-    `save(weights)`
+    `save_weights(weights)`
 
     В качестве аргумента `file_name` можно указать имя файла
     """
