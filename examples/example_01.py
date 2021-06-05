@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw
-from neurobiba import *
+import neurobiba as nb
 from random import random
+
 
 #Константы
 IMAGE_SIZE = WIDTH, HEIGHT = 200, 200
@@ -9,7 +10,7 @@ TRAINING_ITERATIONS = 5000
 
 
 #Создание весов
-weights = create_weights([3,8,1])
+weights = nb.create_weights([3,8,1])
 
 #Генерация датасета
 input_neurons = [[random(), random(), 1] for _ in range(DATA_AMOUNT)]
@@ -18,7 +19,7 @@ output_neurons = [i%2 for i in range(DATA_AMOUNT)]
 #Процесс обучения
 for _ in range(TRAINING_ITERATIONS):
     for i in range(len(input_neurons)):
-        weights = training(input_neurons[i], output_neurons[i], weights)
+        weights = nb.training(input_neurons[i], output_neurons[i], weights)
 
 #Создание картинки
 image = Image.new('RGB', IMAGE_SIZE, 'white')   
@@ -27,7 +28,7 @@ draw = ImageDraw.Draw(image)
 #Отрисовка поля
 for x in range(WIDTH):
     for y in range(HEIGHT):
-        brightness = int(round(feed_forward([x/WIDTH, y/HEIGHT, 1], weights)[0])*255)
+        brightness = int(round(nb.feed_forward([x/WIDTH, y/HEIGHT, 1], weights)[0])*255)
         color = tuple([brightness] * 3)
         draw.point((x, y), color)
 
