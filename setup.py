@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 
-setup(name='neurobiba',
+setup(
+    name='neurobiba',
     version='0.11',
     description='small collection of functions for neural networks',
     long_description='https://github.com/displaceman/neurobiba',
@@ -10,4 +11,5 @@ setup(name='neurobiba',
     license='GPL',
     packages=find_packages(),
     install_requires=['numpy'],
-    zip_safe=False)
+    zip_safe=False
+)
