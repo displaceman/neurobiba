@@ -3,11 +3,13 @@ from pickle import (dump, load)
 
 
 class Weights(list):
-    def __init__(self, size, bias=False):
+    def __init__(self, size=[1,1], bias=False, name="weights"):
         """
         size это список слоев с количеством их нейронов.
         
         bias этот флаг добавляет к каждому слою нейрон смещения
+        
+        name это имя файла .dat в который будет сохранять метод save
         
         Пример использования функции:
         `weights = Weights([3, 10, 10 ,2])`
@@ -15,8 +17,11 @@ class Weights(list):
         Здесь три нейрона на входном слое, 
         два промежуточных слоя по 10 нейронов и 2 нейрона на выходе.
         """ 
+ 
         self.bias = bias
+        self.name = name
         super().__init__([2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)])
+
 
     def deriv_sigmoid(self, x, alpha):
         """Производная сигмоиды. Используется для обучения."""
@@ -25,6 +30,10 @@ class Weights(list):
     def sigmoid(self, x):
         """Сигмоида."""
         return 1/(1+exp(-x))
+    
+    def file_name(self, name):
+        """Меняет имя файла по умолчанию в который записываются веса"""
+        self.name = name
 
     def training(self, input_layer, correct_output, alpha=0.9):
         """
@@ -123,24 +132,25 @@ class Weights(list):
         return l[-1][0]
 
 
-    def download_weights(self, file_name='weights'):
+    def download(file_name="weights"):
         """
         Загрузка весов из файла.
 
         Пример использования:
-        `weights.download_weights()`
+        `weights = Weights.download()`
 
         В качестве аргумента `file_name` можно указать имя файла `.dat` без указания формата.
         """
 
         try:
             with open(f'{file_name}.dat', 'rb') as file:
-                self = load(file)
+                return load(file)
+                print('file downloaded')
         except:
             print('no file with saved weights')
 
 
-    def save_weights(self, file_name='weights'):
+    def save(self, file_name=None):
         """
         Схранение весов в файл.
 
@@ -150,6 +160,9 @@ class Weights(list):
         В качестве аргумента `file_name` можно указать имя файла `.dat` без указания формата.
         """
 
+        if file_name is None:
+            file_name = self.name
+        
         with open(f'{file_name}.dat', 'wb') as file:
             dump(self, file)
         print('file saved')
