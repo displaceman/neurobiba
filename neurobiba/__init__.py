@@ -29,7 +29,7 @@ class Weights():
         self.weights = [
             2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)]
 
-        self.feed_reverse_strategy = feed_reverse_with_bias if bias else feed_reverse_without_bias
+        self.feed_backward_strategy = feed_backward_with_bias if bias else feed_backward_without_bias
 
     def deriv_sigmoid(self, x, alpha):
         """Производная сигмоиды. Используется для обучения."""
@@ -113,7 +113,7 @@ class Weights():
 
         return l[-1][0]
 
-    def feed_reverse(self, input_layer):
+    def feed_backward(self, input_layer):
         """
         НЕ РАБОТАЕТ ЕСЛИ bias==True
 
@@ -122,12 +122,12 @@ class Weights():
         В нее в качестве входного слоя подают то, что ранее считалось выходным слоем.
 
         Пример использования:
-        `r = weights.feed_reverse(input_layer)`
+        `r = weights.feed_backward(input_layer)`
         """
-        return self.feed_reverse_strategy(self, input_layer)
+        return self.feed_backward_strategy(self, input_layer)
 
 
-def feed_reverse_without_bias(weights, input_layer):
+def feed_backward_without_bias(weights, input_layer):
     print('no bias')
     weightsr = list(reversed(weights.weights))
     for ind, i in enumerate(weightsr):
@@ -141,10 +141,10 @@ def feed_reverse_without_bias(weights, input_layer):
     return l[-1][0]
 
 
-def feed_reverse_with_bias(_weights, _input_layer):
+def feed_backward_with_bias(_weights, _input_layer):
     print('bias')
     raise NotImplementedError(
-        "feed_reverse работает только с весами без биаса")
+        "feed_backward работает только с весами без биаса")
 
 
 def load_weights(file_name=_DEFAULT_NAME):
