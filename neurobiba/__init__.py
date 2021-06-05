@@ -1,26 +1,27 @@
 from numpy import (exp, random, array, dot, append)
 from pickle import (dump, load)
 
+
 class Weights():
-    def __init__(self, size=[1,1], bias=False, name="weights"):
+    def __init__(self, size=[1, 1], bias=False, name="weights"):
         """
         size это список слоев с количеством их нейронов.
-        
+
         bias этот флаг добавляет к каждому слою нейрон смещения
-        
+
         name это имя файла .dat в который будет сохранять метод save
-        
+
         Пример использования функции:
         `weights = Weights([3, 10, 10 ,2])`
 
         Здесь три нейрона на входном слое, 
         два промежуточных слоя по 10 нейронов и 2 нейрона на выходе.
-        """ 
- 
+        """
+
         self.bias = bias
         self.name = name
-        self.weights = [2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)]
-
+        self.weights = [
+            2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)]
 
     def deriv_sigmoid(self, x, alpha):
         """Производная сигмоиды. Используется для обучения."""
@@ -75,7 +76,8 @@ class Weights():
 
         if self.bias:
             for ind in range(d-1):
-                self.weights[ind] += l[ind].T.dot(array([l_delta[-1-ind][0][:-1]]))
+                self.weights[ind] += l[ind].T.dot(
+                    array([l_delta[-1-ind][0][:-1]]))
             self.weights[d-1] += l[d-1].T.dot(l_delta[-d])
         else:
             for ind in range(d):
@@ -102,7 +104,6 @@ class Weights():
 
         return l[-1][0]
 
-
     def feed_reverse(self, input_layer):
         """
         НЕ РАБОТАЕТ ЕСЛИ bias==True
@@ -127,9 +128,7 @@ class Weights():
         return l[-1][0]
 
 
-
-
-def _load(file_name="weights"):
+def load(file_name="weights"):
     """
     Загрузка весов из файла.
 
@@ -147,7 +146,7 @@ def _load(file_name="weights"):
         print('no file with saved weights')
 
 
-def _save(weights, file_name=None):
+def save(weights, file_name=None):
     """
     Схранение весов в файл.
 
