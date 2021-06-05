@@ -1,6 +1,6 @@
 from numpy import (exp, random, array, dot, append)
 from pickle import (dump, load)
-from neurobiba.activations import *
+from activations import *
 
 
 """Дефолтное имя для файла весов"""
@@ -11,11 +11,9 @@ class Weights():
     def __init__(self, size=[1, 1], bias=False, name=_DEFAULT_NAME, activation=SIGMOID):
         """
         size это список слоев с количеством их нейронов.
-
-        bias этот флаг добавляет к каждому слою нейрон смещения
-
-        name это имя файла .dat в который будет сохранять метод save
-
+        bias этот флаг добавляет к каждому слою нейрон смещения.
+        name это имя файла в который будет сохранять функция save_weights.
+        
         Пример:
         `weights = Weights([3, 10, 10 ,2])`
 
@@ -26,10 +24,9 @@ class Weights():
         self.bias = bias
         self.name = name
         self.activation = activation
+        self.feed_backward_strategy = feed_backward_with_bias if bias else feed_backward_without_bias
         self.weights = [
             2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)]
-
-        self.feed_backward_strategy = feed_backward_with_bias if bias else feed_backward_without_bias
 
     def deriv_sigmoid(self, x, alpha):
         """Производная сигмоиды. Используется для обучения."""
@@ -52,13 +49,11 @@ class Weights():
 
         `input_layer` - это список нейронов входного слоя. 
         Они должны находится в диапазоне от `0` до `1`.
-        Например:
-        `input_layer = [1, 0, 0.7]`
+        Например: `input_layer = [1, 0, 0.7]`
 
         correct_output это список правильных выходов для заданных входов.
         Они должны находится в диапазоне от `0` до `1`.
-        Например:
-        `correct_output = [0.5, 1]`
+        Например: `correct_output = [0.5, 1]`
 
         `alpha` - это коэфициент скорости обучения. 
         Его оптимальное значение меняется в зависимости от задачи.
@@ -97,7 +92,7 @@ class Weights():
         Функция для получения ответа нейросети.
         Возвращает список выходных нейронов.
 
-        Пример использования:
+        Пример:
         `result = weights.feed_forward(input_layer)`
 
         `input_layer` - это список входных нейронов.
@@ -115,13 +110,13 @@ class Weights():
 
     def feed_backward(self, input_layer):
         """
-        НЕ РАБОТАЕТ ЕСЛИ bias==True
+        НЕ РАБОТАЕТ НА ВЕСАХ С БИАСОМ
 
         Эта функция работает так же, как `feed_forward`,
         но проводит сигнал через нейросеть в обратном направлении.
         В нее в качестве входного слоя подают то, что ранее считалось выходным слоем.
 
-        Пример использования:
+        Пример:
         `r = weights.feed_backward(input_layer)`
         """
         return self.feed_backward_strategy(self, input_layer)
