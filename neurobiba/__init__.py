@@ -1,6 +1,6 @@
 from numpy import (exp, random, array, dot, append)
 from pickle import (dump, load)
-from activations import *
+from neurobiba.activations import *
 
 
 """Дефолтное имя для файла весов"""
