@@ -75,17 +75,15 @@ class Weights():
 
         for i in range(d-1):
             l_error.append(l_delta[i].dot(self.weights[d-1-i].T))
-            l_delta.append(
+            if self.bias:
+                l_delta.append(
+                array([(l_error[-1] * self.activation.deriv(l[d-1-i]) * alpha)[0][:-1]]))
+            else:
+                l_delta.append(
                 l_error[-1] * self.activation.deriv(l[d-1-i]) * alpha)
 
-        if self.bias:
-            for ind in range(d-1):
-                self.weights[ind] += l[ind].T.dot(
-                    array([l_delta[-1-ind][0][:-1]]))
-            self.weights[d-1] += l[d-1].T.dot(l_delta[-d])
-        else:
-            for ind in range(d):
-                self.weights[ind] += l[ind].T.dot(l_delta[-1-ind])
+        for ind in range(d):
+            self.weights[ind] += l[ind].T.dot(l_delta[-1-ind])
 
     def feed_forward(self, input_layer):
         """
