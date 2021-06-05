@@ -1,9 +1,10 @@
 from numpy import (exp, random, array, dot, append)
 from pickle import (dump, load)
+from neurobiba.activations import *
 
 
 class Weights():
-    def __init__(self, size=[1, 1], bias=False, name="weights"):
+    def __init__(self, size=[1, 1], bias=False, name="weights", activation=SIGMOID):
         """
         size это список слоев с количеством их нейронов.
 
@@ -20,8 +21,11 @@ class Weights():
 
         self.bias = bias
         self.name = name
+        self.activation = activation
         self.weights = [
             2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)]
+
+        self.feed_reverse_strategy = feed_reverse_with_bias if bias else feed_reverse_without_bias
 
     def deriv_sigmoid(self, x, alpha):
         """Производная сигмоиды. Используется для обучения."""
@@ -62,17 +66,18 @@ class Weights():
         for i in range(d):
             if self.bias:
                 l[-1] = array([append(l[-1], 1)])
-            l.append(self.sigmoid(dot(l[-1], self.weights[i])))
+            l.append(self.activation.fn(dot(l[-1], self.weights[i])))
 
         l_error = []
         l_delta = []
 
         l_error.append(correct_output - l[-1])
-        l_delta.append(l_error[-1] * self.deriv_sigmoid(l[-1], alpha))
+        l_delta.append(l_error[-1] * self.activation.deriv(l[-1], alpha))
 
         for i in range(d-1):
             l_error.append(l_delta[i].dot(self.weights[d-1-i].T))
-            l_delta.append(l_error[-1] * self.deriv_sigmoid(l[d-1-i], alpha))
+            l_delta.append(
+                l_error[-1] * self.activation.deriv(l[d-1-i], alpha))
 
         if self.bias:
             for ind in range(d-1):
@@ -100,7 +105,7 @@ class Weights():
         for i in range(d):
             if self.bias:
                 l[-1] = array([append(l[-1], 1)])
-            l.append(self.sigmoid(dot(l[-1], self.weights[i])))
+            l.append(self.activation.fn(dot(l[-1], self.weights[i])))
 
         return l[-1][0]
 
@@ -115,17 +120,27 @@ class Weights():
         Пример использования:
         `r = weights.feed_reverse(input_layer)`
         """
+        return self.feed_reverse_strategy(self, input_layer)
 
-        weightsr = list(reversed(self.weights))
-        for ind, i in enumerate(weightsr):
-            weightsr[ind] = weightsr[ind].T
 
-        l = [array([input_layer])]
-        d = len(weightsr)
+def feed_reverse_without_bias(weights, input_layer):
+    print('no bias')
+    weightsr = list(reversed(weights.weights))
+    for ind, i in enumerate(weightsr):
+        weightsr[ind] = weightsr[ind].T
 
-        for i in range(d):
-            l.append(self.sigmoid(dot(l[-1], weightsr[i])))
-        return l[-1][0]
+    l = [array([input_layer])]
+    d = len(weightsr)
+
+    for i in range(d):
+        l.append(weights.activation.fn(dot(l[-1], weightsr[i])))
+    return l[-1][0]
+
+
+def feed_reverse_with_bias(_weights, _input_layer):
+    print('bias')
+    raise NotImplementedError(
+        "feed_reverse работает только с весами без биаса")
 
 
 def load(file_name="weights"):
@@ -133,7 +148,7 @@ def load(file_name="weights"):
     Загрузка весов из файла.
 
     Пример использования:
-    `weights = _load()`
+    `weights = load()`
 
     В качестве аргумента `file_name` можно указать имя файла
     """
@@ -151,7 +166,7 @@ def save(weights, file_name=None):
     Схранение весов в файл.
 
     Пример использования:
-    `_save(weights)`
+    `save(weights)`
 
     В качестве аргумента `file_name` можно указать имя файла
     """
