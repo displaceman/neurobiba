@@ -5,3 +5,4 @@ neurobiba.egg-info/*
 **/.tmp
 test.py
 Test_СNN.py
+.idea/
