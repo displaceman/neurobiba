@@ -31,13 +31,12 @@ class Weights():
             str(default_counter())
         self.activation = activation
         if bias:
-            self._train_strategy = self._train_with_bias
             self._feed_forward_strategy = _feed_forward_with_bias
             self._feed_backward_strategy = _feed_backward_with_bias
         else:
-            self._train_strategy = self._train_without_bias
             self._feed_forward_strategy = _feed_forward_without_bias
             self._feed_backward_strategy = _feed_backward_without_bias
+
         self.weights = [
             2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)]
 
@@ -67,36 +66,24 @@ class Weights():
         Его оптимальное значение меняется в зависимости от задачи.
         """
 
-        layers = self._feed_forward(input_layer)    #Прогон через нейрость.
-        len_weights = len(self.weights)
-        layers_error = []
-        layers_delta = []
-
+         #Прогон через нейрость.
+        layers = self._feed_forward(input_layer)   
+        
         # Вычисляет первый корректировки весов. Вынесено отдельно от цикла потому то код отличается
+        layers_error, layers_delta = [], []
         layers_error.append(correct_output - layers[-1])
-        layers_delta.append(
-            layers_error[-1] * self.activation.deriv(layers[-1]) * alpha)
+        layers_delta.append(layers_error[-1] * self.activation.deriv(layers[-1]) * alpha)
 
         #Вычисляет корректировку остальных слоев.
-        for i in range(len_weights-1):
-            layers_error.append(layers_delta[i].dot(
-                self.weights[len_weights-1-i].T))
-
-            #Код отличается для версии с биасом и без.
-            layers_delta.append(self._train_strategy(layers_error, layers, i, alpha))
+        for i in range(len(self.weights)-1):
+            layers_error.append(layers_delta[i].dot(self.weights[len(self.weights)-1-i].T))
+            delta = (layers_error[-1] * self.activation.deriv(layers[len(self.weights)-1-i]) * alpha)[0]
+            layers_delta.append(array([delta[:len(delta)-self.bias]]))
 
         #Корректировка весов
-        for ind in range(len_weights):
+        for ind in range(len(self.weights)):
             self.weights[ind] += layers[ind].T.dot(layers_delta[-1-ind])
  
-    def _train_with_bias(self, layers_error, layers, i, alpha):
-        #Сюда вынесена строка из функции train которая отличается для нейросети с биасом и без биаса
-        return array([(layers_error[-1] * self.activation.deriv(layers[len(self.weights)-1-i]) * alpha)[0][:-1]])
-
-    def _train_without_bias(self, layers_error, layers, i, alpha):
-        #Сюда вынесена строка из функции train которая отличается для нейросети с биасом и без биаса
-        return layers_error[-1] * self.activation.deriv(layers[len(self.weights)-1-i]) * alpha
-
 
     def feed_forward(self, input_layer):
         """
