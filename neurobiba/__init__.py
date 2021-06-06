@@ -63,31 +63,31 @@ class Weights():
         Его оптимальное значение меняется в зависимости от задачи.
         """
 
-        l = [array([input_layer])]
-        d = len(self.weights)
+        layers = [array([input_layer])]
+        len_weights = len(self.weights)
 
-        for i in range(d):
+        for i in range(len_weights):
             if self.bias:
-                l[-1] = array([append(l[-1], 1)])
-            l.append(self.activation.fn(dot(l[-1], self.weights[i])))
+                layers[-1] = array([append(layers[-1], 1)])
+            layers.append(self.activation.fn(dot(layers[-1], self.weights[i])))
 
-        l_error = []
-        l_delta = []
+        layers_error = []
+        layers_delta = []
 
-        l_error.append(correct_output - l[-1])
-        l_delta.append(l_error[-1] * self.activation.deriv(l[-1]) * alpha)
+        layers_error.append(correct_output - layers[-1])
+        layers_delta.append(layers_error[-1] * self.activation.deriv(layers[-1]) * alpha)
 
-        for i in range(d-1):
-            l_error.append(l_delta[i].dot(self.weights[d-1-i].T))
+        for i in range(len_weights-1):
+            layers_error.append(layers_delta[i].dot(self.weights[len_weights-1-i].T))
             if self.bias:
-                l_delta.append(
-                    array([(l_error[-1] * self.activation.deriv(l[d-1-i]) * alpha)[0][:-1]]))
+                layers_delta.append(
+                    array([(layers_error[-1] * self.activation.deriv(layers[len_weights-1-i]) * alpha)[0][:-1]]))
             else:
-                l_delta.append(
-                    l_error[-1] * self.activation.deriv(l[d-1-i]) * alpha)
+                layers_delta.append(
+                    layers_error[-1] * self.activation.deriv(layers[d-1-i]) * alpha)
 
-        for ind in range(d):
-            self.weights[ind] += l[ind].T.dot(l_delta[-1-ind])
+        for ind in range(len_weights):
+            self.weights[ind] += layers[ind].T.dot(layers_delta[-1-ind])
 
     def feed_forward(self, input_layer):
         """
@@ -116,24 +116,24 @@ class Weights():
 
 
 def _feed_forward_without_bias(weights, input_layer):
-    l = [array([input_layer])]
-    d = len(weights.weights)
+    layers = [array([input_layer])]
+    len_weights = len(weights.weights)
 
-    for i in range(d):
-        l.append(weights.activation.fn(dot(l[-1], weights.weights[i])))
+    for i in range(len_weights):
+        layers.append(weights.activation.fn(dot(layers[-1], weights.weights[i])))
 
-    return l[-1][0]
+    return layers[-1][0]
 
 
 def _feed_forward_with_bias(weights, input_layer):
-    l = [array([input_layer])]
-    d = len(weights.weights)
+    layers = [array([input_layer])]
+    len_weights = len(weights.weights)
 
-    for i in range(d):
-        l[-1] = array([append(l[-1], 1)])
-        l.append(weights.activation.fn(dot(l[-1], weights.weights[i])))
+    for i in range(len_weights):
+        layers[-1] = array([append(layers[-1], 1)])
+        layers.append(weights.activation.fn(dot(layers[-1], weights.weights[i])))
 
-    return l[-1][0]
+    return layers[-1][0]
 
 
 def _feed_backward_without_bias(weights, input_layer):
@@ -141,12 +141,12 @@ def _feed_backward_without_bias(weights, input_layer):
     for ind, i in enumerate(weightsr):
         weightsr[ind] = weightsr[ind].T
 
-    l = [array([input_layer])]
-    d = len(weightsr)
+    layers = [array([input_layer])]
+    len_weights = len(weightsr)
 
-    for i in range(d):
-        l.append(weights.activation.fn(dot(l[-1], weightsr[i])))
-    return l[-1][0]
+    for i in range(len_weights):
+        layers.append(weights.activation.fn(dot(layers[-1], weightsr[i])))
+    return layers[-1][0]
 
 
 def _feed_backward_with_bias(_weights, _input_layer):
