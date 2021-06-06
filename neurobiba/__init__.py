@@ -1,19 +1,23 @@
 from numpy import (exp, random, array, dot, append)
 from pickle import (dump, load)
 from neurobiba.activations import *
+from neurobiba.helpers import default_counter
 
 
-"""Дефолтное имя для файла весов"""
-_DEFAULT_NAME = 'weights'
+_WEIGHTS_NAME_PREFIX = "weights_"
 
 
 class Weights():
-    def __init__(self, size=[1, 1], bias=False, name=_DEFAULT_NAME, activation=SIGMOID):
+    def __init__(self,
+                 size=[1, 1],
+                 bias=False,
+                 name=None,
+                 activation=SIGMOID):
         """
         size это список слоев с количеством их нейронов.
         bias этот флаг добавляет к каждому слою нейрон смещения.
         name это имя файла в который будет сохранять функция save_weights.
-        
+
         Пример:
         `weights = Weights([3, 10, 10 ,2])`
 
@@ -22,7 +26,8 @@ class Weights():
         """
 
         self.bias = bias
-        self.name = name
+        self.name = name if name else _WEIGHTS_NAME_PREFIX + \
+            str(default_counter())
         self.activation = activation
         self.feed_backward_strategy = feed_backward_with_bias if bias else feed_backward_without_bias
         self.weights = [
@@ -77,10 +82,10 @@ class Weights():
             l_error.append(l_delta[i].dot(self.weights[d-1-i].T))
             if self.bias:
                 l_delta.append(
-                array([(l_error[-1] * self.activation.deriv(l[d-1-i]) * alpha)[0][:-1]]))
+                    array([(l_error[-1] * self.activation.deriv(l[d-1-i]) * alpha)[0][:-1]]))
             else:
                 l_delta.append(
-                l_error[-1] * self.activation.deriv(l[d-1-i]) * alpha)
+                    l_error[-1] * self.activation.deriv(l[d-1-i]) * alpha)
 
         for ind in range(d):
             self.weights[ind] += l[ind].T.dot(l_delta[-1-ind])
@@ -140,7 +145,7 @@ def feed_backward_with_bias(_weights, _input_layer):
         "feed_backward работает только с весами без биаса")
 
 
-def load_weights(file_name=_DEFAULT_NAME):
+def load_weights(file_name=_WEIGHTS_NAME_PREFIX + "0"):
     """
     Загрузка весов из файла.
 
