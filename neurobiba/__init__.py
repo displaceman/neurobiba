@@ -109,11 +109,8 @@ class Weights():
 
         `input_layer` - это список входных нейронов.
         """
-        return self._extracting_output(self._feed_forward(input_layer))
+        return self._feed_forward(input_layer)[-1][0]
     
-    def _extracting_output(self, layers):
-        #Извлекет выходной слой из списка всех слоев
-        return layers[-1][0]
 
     def _feed_forward(self, input_layer):
         #Вычисляет и возвращает все слои
