@@ -13,7 +13,6 @@ class Weights():
                  bias=False,
                  name=None,
                  activation=SIGMOID):
-
         """
         size это список слоев с количеством их нейронов.
         bias этот флаг добавляет к каждому слою нейрон смещения.
@@ -30,8 +29,12 @@ class Weights():
         self.name = name if name else _WEIGHTS_NAME_PREFIX + \
             str(default_counter())
         self.activation = activation
-        self.feed_backward_strategy = _feed_backward_with_bias if bias else _feed_backward_without_bias
-        self.feed_forward_strategy = _feed_forward_with_bias if bias else _feed_forward_without_bias
+        if bias:
+            self.feed_backward_strategy = _feed_backward_with_bias
+            self.feed_forward_strategy = _feed_forward_with_bias
+        else:
+            self.feed_backward_strategy = _feed_backward_without_bias
+            self.feed_forward_strategy = _feed_forward_without_bias
         self.weights = [
             2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)]
 
@@ -43,14 +46,16 @@ class Weights():
         Ее нужно вызывать в цикле столько раз сколько потребуется для обучения.
 
         Пример:
-        `for i in range(1000): 
-            weights.training(input_layer, correct_output)`
+        ```
+        for i in range(1000):
+            weights.training(input_layer, correct_output)
+        ```
 
         `input_layer` - это список нейронов входного слоя. 
         Они должны находится в диапазоне от `0` до `1`.
         Например: `input_layer = [1, 0, 0.7]`
 
-        correct_output это список правильных выходов для заданных входов.
+        `correct_output` - это список правильных выходов для заданных входов.
         Они должны находится в диапазоне от `0` до `1`.
         Например: `correct_output = [0.5, 1]`
 
