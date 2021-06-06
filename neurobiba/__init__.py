@@ -66,21 +66,21 @@ class Weights():
         Его оптимальное значение меняется в зависимости от задачи.
         """
 
-         #Прогон через нейрость.
+        # Прогон через нейрость
         layers = self._feed_forward(input_layer)   
         
-        # Вычисляет первый корректировки весов. Вынесено отдельно от цикла потому то код отличается
+        # Вычисляет первый слой корректировки весов
         layers_error, layers_delta = [], []
         layers_error.append(correct_output - layers[-1])
         layers_delta.append(layers_error[-1] * self.activation.deriv(layers[-1]) * alpha)
 
-        #Вычисляет корректировку остальных слоев.
+        # Вычисляет корректировку остальных слоев
         for i in range(len(self.weights)-1):
             layers_error.append(layers_delta[i].dot(self.weights[len(self.weights)-1-i].T))
             delta = (layers_error[-1] * self.activation.deriv(layers[len(self.weights)-1-i]) * alpha)[0]
             layers_delta.append(array([delta[:len(delta)-self.bias]]))
 
-        #Корректировка весов
+        # Корректировка весов
         for ind in range(len(self.weights)):
             self.weights[ind] += layers[ind].T.dot(layers_delta[-1-ind])
  
