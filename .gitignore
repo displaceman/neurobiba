@@ -5,8 +5,6 @@ neurobiba.egg-info/*
 **/.tmp
 test.py
 Test_СNN.py
-<<<<<<< HEAD
 Test_example.py
-=======
 .idea/
->>>>>>> 61e975ee43c9c12e0cc6fb69fd24730b5e17fc9e
+
