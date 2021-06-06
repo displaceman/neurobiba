@@ -31,11 +31,13 @@ class Weights():
             str(default_counter())
         self.activation = activation
         if bias:
-            self._feed_backward_strategy = _feed_backward_with_bias
+            self._train_strategy = self._train_with_bias
             self._feed_forward_strategy = _feed_forward_with_bias
+            self._feed_backward_strategy = _feed_backward_with_bias
         else:
-            self._feed_backward_strategy = _feed_backward_without_bias
+            self._train_strategy = self._train_without_bias
             self._feed_forward_strategy = _feed_forward_without_bias
+            self._feed_backward_strategy = _feed_backward_without_bias
         self.weights = [
             2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)]
 
@@ -65,17 +67,12 @@ class Weights():
         Его оптимальное значение меняется в зависимости от задачи.
         """
 
-        #Прогон через нейрость.
-        layers = self._feed_forward(input_layer)
-
-        #Создаем переменную чтоб много раз не вычислять длину.
+        layers = self._feed_forward(input_layer)    #Прогон через нейрость.
         len_weights = len(self.weights)
-
-        # Дальше идет вычисление корректировки весов
         layers_error = []
         layers_delta = []
 
-        #Вычисляет первый слой ошибки. Вынесено отдельно от цикла потому то код отличается
+        # Вычисляет первый корректировки весов. Вынесено отдельно от цикла потому то код отличается
         layers_error.append(correct_output - layers[-1])
         layers_delta.append(
             layers_error[-1] * self.activation.deriv(layers[-1]) * alpha)
@@ -86,22 +83,24 @@ class Weights():
                 self.weights[len_weights-1-i].T))
 
             #Код отличается для версии с биасом и без.
-            if self.bias:
-                layers_delta.append(
-                    array([(layers_error[-1] * self.activation.deriv(layers[len_weights-1-i]) * alpha)[0][:-1]]))
-            else:
-                layers_delta.append(
-                    layers_error[-1] * self.activation.deriv(layers[len_weights-1-i]) * alpha)
+            layers_delta.append(self._train_strategy(layers_error, layers, i, alpha))
 
         #Корректировка весов
         for ind in range(len_weights):
             self.weights[ind] += layers[ind].T.dot(layers_delta[-1-ind])
+ 
+    def _train_with_bias(self, layers_error, layers, i, alpha):
+        #Сюда вынесена строка из функции train которая отличается для нейросети с биасом и без биаса
+        return array([(layers_error[-1] * self.activation.deriv(layers[len(self.weights)-1-i]) * alpha)[0][:-1]])
 
-    
+    def _train_without_bias(self, layers_error, layers, i, alpha):
+        #Сюда вынесена строка из функции train которая отличается для нейросети с биасом и без биаса
+        return layers_error[-1] * self.activation.deriv(layers[len(self.weights)-1-i]) * alpha
+
 
     def feed_forward(self, input_layer):
         """
-        Функция для получения ответа нейросети.
+        Метод для получения ответа нейросети.
         Возвращает список выходных нейронов.
 
         Пример:
@@ -137,6 +136,7 @@ class Weights():
         """
         return self._feed_backward_strategy(self, input_layer)
 
+    
 
 
 def _feed_forward_without_bias(layers):
