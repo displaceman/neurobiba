@@ -31,19 +31,14 @@ class Weights():
             str(default_counter())
         self.activation = activation
         if bias:
-            self._init_weights_with_bias()
+            self._feed_backward_strategy = _feed_backward_with_bias
+            self._feed_forward_strategy = _feed_forward_with_bias
         else:
-            self._init_weights_with_bias()
+            self._feed_backward_strategy = _feed_backward_without_bias
+            self._feed_forward_strategy = _feed_forward_without_bias
         self.weights = [
             2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)]
 
-    def _init_weights_with_bias(self):
-        self._feed_backward_strategy = _feed_backward_with_bias
-        self._feed_forward_strategy = _feed_forward_with_bias
-
-    def _init_weights_without_bias(self):
-        self._feed_backward_strategy = _feed_backward_without_bias
-        self._feed_forward_strategy = _feed_forward_without_bias
 
     def train(self, input_layer, correct_output, alpha=0.9):
         """
