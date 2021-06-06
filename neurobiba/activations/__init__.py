@@ -15,8 +15,12 @@ class Activation():
         return self._deriv
 
 
-def sigmoida(x):
-    return 1 / (1 + exp(-x)) 
-def deriv_sigmoida(x):
+def _sigmoid(x):
+    return 1 / (1 + exp(-x))
+
+
+def _sigmoid_derivative(x):
     return x * (1 - x)
-SIGMOID = Activation(sigmoida, deriv_sigmoida)
+
+
+SIGMOID = Activation(_sigmoid, _sigmoid_derivative)

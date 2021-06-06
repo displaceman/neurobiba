@@ -1,5 +1,6 @@
 # neurobiba
 
+[![visitors](https://badge.fury.io/py/neurobiba.svg)](https://pypi.org/project/neurobiba/)
 ![visitors](https://visitor-badge.laobi.icu/badge?page_id=displaceman.neurobiba)
 
 other languages:
