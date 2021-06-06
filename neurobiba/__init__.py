@@ -30,8 +30,8 @@ class Weights():
         self.name = name if name else _WEIGHTS_NAME_PREFIX + \
             str(default_counter())
         self.activation = activation
-        self.feed_backward_strategy = feed_backward_with_bias if bias else feed_backward_without_bias
-        self.feed_forward_strategy = feed_forward_with_bias if bias else feed_forward_without_bias
+        self.feed_backward_strategy = _feed_backward_with_bias if bias else _feed_backward_without_bias
+        self.feed_forward_strategy = _feed_forward_with_bias if bias else _feed_forward_without_bias
         self.weights = [
             2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)]
 
@@ -109,28 +109,26 @@ class Weights():
         """
         return self.feed_backward_strategy(self, input_layer)
 
-def feed_forward(funk):
 
-    def feed(weights, input_layer):
-        l = [array([input_layer])]
-        d = len(weights.weights)
+def _feed_forward_without_bias(weights, input_layer):
+    l = [array([input_layer])]
+    d = len(weights.weights)
 
-        for i in range(d):
+    for i in range(d):
+        l.append(weights.activation.fn(dot(l[-1], weights.weights[i])))
 
-            l = funk(l)
-            l.append(weights.activation.fn(dot(l[-1], weights.weights[i])))
+    return l[-1][0]
 
-        return l[-1][0]
-    return feed
 
-@feed_forward
-def feed_forward_without_bias(l):
-    return l
+def _feed_forward_with_bias(weights, input_layer):
+    l = [array([input_layer])]
+    d = len(weights.weights)
 
-@feed_forward
-def feed_forward_with_bias(l):
-    l[-1] = array([append(l[-1], 1)])
-    return l
+    for i in range(d):
+        l[-1] = array([append(l[-1], 1)])
+        l.append(weights.activation.fn(dot(l[-1], weights.weights[i])))
+
+    return l[-1][0]
 
 
 def _feed_backward_without_bias(weights, input_layer):
