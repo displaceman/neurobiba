@@ -107,7 +107,7 @@ class Weights():
         len_weights = len(self.weights)
 
         for i in range(len_weights):
-            layers = self._feed_forward_strategy(self)
+            layers = self._feed_forward_strategy(layers)
             layers.append(self.activation.fn(
                 dot(layers[-1], self.weights[i])))
 
