@@ -135,7 +135,7 @@ def _feed_backward_with_bias(_weights, _input_layer):
         "feed_backward работает только с весами без биаса")
 
 
-def load_weights(file_name=_WEIGHTS_NAME_PREFIX + "0"):
+def load_weights(file_name=_WEIGHTS_NAME_PREFIX + "0") -> Weights:
     """
     Загрузка весов из файла.
 
@@ -149,8 +149,8 @@ def load_weights(file_name=_WEIGHTS_NAME_PREFIX + "0"):
         with open(file_name, 'rb') as file:
             print('file loaded')
             return load(file)
-    except:
-        print(f'ERROR: no file {file_name}')
+    except FileNotFoundError:
+        print(f'FileNotFoundError: No such file or directory: {file_name}')
 
 
 def save_weights(weights, file_name=None):
