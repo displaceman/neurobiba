@@ -103,8 +103,16 @@ class Weights():
 
         `input_layer` - это список входных нейронов.
         """
-        return self._feed_forward_strategy(self, input_layer)
+        layers = [array([input_layer])]
+        len_weights = len(self.weights)
 
+        for i in range(len_weights):
+            layers = self._feed_forward_strategy(self)
+            layers.append(self.activation.fn(
+                dot(layers[-1], self.weights[i])))
+
+        return layers[-1][0]
+        
     def feed_backward(self, input_layer):
         """
         НЕ РАБОТАЕТ НА ВЕСАХ С БИАСОМ
@@ -116,15 +124,8 @@ class Weights():
         Пример:
         `r = weights.feed_backward(input_layer)`
         """
-        layers = [array([input_layer])]
-        len_weights = len(self.weights)
+        return self._feed_backward_strategy(self, input_layer)
 
-        for i in range(len_weights):
-            layers = self._feed_backward_strategy(self)
-            layers.append(self.activation.fn(
-                dot(layers[-1], self.weights[i])))
-
-        return layers[-1][0]
 
 
 def _feed_forward_without_bias(layers):
