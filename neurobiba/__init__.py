@@ -33,14 +33,6 @@ class Weights():
         self.weights = [
             2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)]
 
-    def deriv_sigmoid(self, x, alpha):
-        """Производная сигмоиды. Используется для обучения."""
-        return (x * (1-x))*alpha
-
-    def sigmoid(self, x):
-        """Сигмоида."""
-        return 1/(1+exp(-x))
-
     def train(self, input_layer, correct_output, alpha=0.9):
         """
         Функция для обучения нейросети 

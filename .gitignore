@@ -3,3 +3,5 @@ neurobiba.egg-info/*
 инструкция.txt
 **/__pycache__
 **/.tmp
+test.py
+Test_СNN.py
