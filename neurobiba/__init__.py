@@ -30,13 +30,19 @@ class Weights():
             str(default_counter())
         self.activation = activation
         if bias:
-            self.feed_backward_strategy = _feed_backward_with_bias
-            self.feed_forward_strategy = _feed_forward_with_bias
+            self._init_weights_with_bias()
         else:
-            self.feed_backward_strategy = _feed_backward_without_bias
-            self.feed_forward_strategy = _feed_forward_without_bias
+            self._init_weights_with_bias()
         self.weights = [
             2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)]
+
+    def _init_weights_with_bias(self):
+        self._feed_backward_strategy = _feed_backward_with_bias
+        self._feed_forward_strategy = _feed_forward_with_bias
+
+    def _init_weights_without_bias(self):
+        self._feed_backward_strategy = _feed_backward_without_bias
+        self._feed_forward_strategy = _feed_forward_without_bias
 
     def train(self, input_layer, correct_output, alpha=0.9):
         """
@@ -75,10 +81,12 @@ class Weights():
         layers_delta = []
 
         layers_error.append(correct_output - layers[-1])
-        layers_delta.append(layers_error[-1] * self.activation.deriv(layers[-1]) * alpha)
+        layers_delta.append(
+            layers_error[-1] * self.activation.deriv(layers[-1]) * alpha)
 
         for i in range(len_weights-1):
-            layers_error.append(layers_delta[i].dot(self.weights[len_weights-1-i].T))
+            layers_error.append(layers_delta[i].dot(
+                self.weights[len_weights-1-i].T))
             if self.bias:
                 layers_delta.append(
                     array([(layers_error[-1] * self.activation.deriv(layers[len_weights-1-i]) * alpha)[0][:-1]]))
@@ -99,7 +107,7 @@ class Weights():
 
         `input_layer` - это список входных нейронов.
         """
-        return self.feed_forward_strategy(self, input_layer)
+        return self._feed_forward_strategy(self, input_layer)
 
     def feed_backward(self, input_layer):
         """
@@ -112,7 +120,7 @@ class Weights():
         Пример:
         `r = weights.feed_backward(input_layer)`
         """
-        return self.feed_backward_strategy(self, input_layer)
+        return self._feed_backward_strategy(self, input_layer)
 
 
 def _feed_forward_without_bias(weights, input_layer):
