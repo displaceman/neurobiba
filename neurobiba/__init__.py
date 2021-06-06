@@ -136,7 +136,7 @@ def _feed_forward_with_bias(layers):
     return layers
 
 
-def _feed_backward_without_bias(weights, input_layer):
+def _feed_backward_without_bias(weights):
     weightsr = list(reversed(weights.weights))
     for ind, i in enumerate(weightsr):
         weightsr[ind] = weightsr[ind].T
