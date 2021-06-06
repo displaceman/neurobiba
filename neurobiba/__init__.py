@@ -84,7 +84,7 @@ class Weights():
                     array([(layers_error[-1] * self.activation.deriv(layers[len_weights-1-i]) * alpha)[0][:-1]]))
             else:
                 layers_delta.append(
-                    layers_error[-1] * self.activation.deriv(layers[d-1-i]) * alpha)
+                    layers_error[-1] * self.activation.deriv(layers[len_weights-1-i]) * alpha)
 
         for ind in range(len_weights):
             self.weights[ind] += layers[ind].T.dot(layers_delta[-1-ind])
@@ -120,7 +120,8 @@ def _feed_forward_without_bias(weights, input_layer):
     len_weights = len(weights.weights)
 
     for i in range(len_weights):
-        layers.append(weights.activation.fn(dot(layers[-1], weights.weights[i])))
+        layers.append(weights.activation.fn(
+            dot(layers[-1], weights.weights[i])))
 
     return layers[-1][0]
 
@@ -131,7 +132,8 @@ def _feed_forward_with_bias(weights, input_layer):
 
     for i in range(len_weights):
         layers[-1] = array([append(layers[-1], 1)])
-        layers.append(weights.activation.fn(dot(layers[-1], weights.weights[i])))
+        layers.append(weights.activation.fn(
+            dot(layers[-1], weights.weights[i])))
 
     return layers[-1][0]
 
