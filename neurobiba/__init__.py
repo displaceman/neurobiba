@@ -30,7 +30,7 @@ class Weights():
         self.name = name if name else _WEIGHTS_NAME_PREFIX + \
             str(default_counter())
         self.activation = activation
-        self.feed_backward_strategy = feed_backward_with_bias if bias else feed_backward_without_bias
+        self.feed_backward_strategy = _feed_backward_with_bias if bias else _feed_backward_without_bias
         self.feed_forward_strategy = feed_forward_with_bias if bias else feed_forward_without_bias
         self.weights = [
             2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)]
