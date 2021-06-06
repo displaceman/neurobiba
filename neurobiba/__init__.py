@@ -116,30 +116,24 @@ class Weights():
         Пример:
         `r = weights.feed_backward(input_layer)`
         """
-        return self._feed_backward_strategy(self, input_layer)
+        layers = [array([input_layer])]
+        len_weights = len(self.weights)
+
+        for i in range(len_weights):
+            layers = self._feed_backward_strategy(self)
+            layers.append(self.activation.fn(
+                dot(layers[-1], self.weights[i])))
+
+        return layers[-1][0]
 
 
-def _feed_forward_without_bias(weights, input_layer):
-    layers = [array([input_layer])]
-    len_weights = len(weights.weights)
-
-    for i in range(len_weights):
-        layers.append(weights.activation.fn(
-            dot(layers[-1], weights.weights[i])))
-
-    return layers[-1][0]
+def _feed_forward_without_bias(layers):
+    return layers
 
 
-def _feed_forward_with_bias(weights, input_layer):
-    layers = [array([input_layer])]
-    len_weights = len(weights.weights)
-
-    for i in range(len_weights):
-        layers[-1] = array([append(layers[-1], 1)])
-        layers.append(weights.activation.fn(
-            dot(layers[-1], weights.weights[i])))
-
-    return layers[-1][0]
+def _feed_forward_with_bias(layers):
+    layers[-1] = array([append(layers[-1], 1)])
+    return layers
 
 
 def _feed_backward_without_bias(weights, input_layer):
