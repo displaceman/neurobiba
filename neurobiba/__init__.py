@@ -1,4 +1,4 @@
-from numpy import (exp, random, array, dot, append)
+from numpy import (exp, random, array, dot, append, delete)
 from pickle import (dump, load)
 from neurobiba.activations import *
 from neurobiba.helpers import default_counter
@@ -69,20 +69,18 @@ class Weights():
         # Прогон через нейрость
         layers = self._feed_forward(input_layer)   
         
-        # Вычисляет первый слой корректировки весов
-        layers_error, layers_delta = [], []
-        layers_error.append(correct_output - layers[-1])
-        layers_delta.append(layers_error[-1] * self.activation.deriv(layers[-1]) * alpha)
+        # Корректирует крайний слой весов
+        error = correct_output - layers[-1]
+        delta = error * self.activation.deriv(layers[-1]) * alpha
+        self.weights[-1] += layers[-2].T.dot(delta)
 
-        # Вычисляет корректировку остальных слоев
+        # Корректрирует остальные слои весов
         for i in range(len(self.weights)-1):
-            layers_error.append(layers_delta[i].dot(self.weights[len(self.weights)-1-i].T))
-            delta = (layers_error[-1] * self.activation.deriv(layers[len(self.weights)-1-i]) * alpha)[0]
-            layers_delta.append(array([delta[:len(delta)-self.bias]]))
-
-        # Корректировка весов
-        for ind in range(len(self.weights)):
-            self.weights[ind] += layers[ind].T.dot(layers_delta[-1-ind])
+            error = delta.dot(self.weights[len(self.weights)-1-i].T)
+            #delta = error * self.activation.deriv(layers[len(self.weights)-1-i]) * alpha       #Без биаса нижние две строи могли бы выглядеть так
+            delta = (error * self.activation.deriv(layers[len(self.weights)-1-i]) * alpha)[0]
+            delta = array([delta[:len(delta)-self.bias]])
+            self.weights[-2-i] += layers[-3-i].T.dot(delta)
  
 
     def feed_forward(self, input_layer):
@@ -104,7 +102,11 @@ class Weights():
         len_weights = len(self.weights)
 
         for i in range(len_weights):
-            layers = self._feed_forward_strategy(layers)
+            if self.bias:
+                layers[-1] = array([append(layers[-1], 1)])
+
+            #layers = self._feed_forward_strategy(layers)
+
             layers.append(self.activation.fn(
                 dot(layers[-1], self.weights[i])))
 
