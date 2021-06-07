@@ -139,9 +139,9 @@ NO_BIAS = WithoutBiasStrategy()
 
 class Weights():
     def __init__(self,
-                 size: list[int] = [1, 1],
-                 bias: BiasStrategy = NO_BIAS,
-                 name: str = None,
+                 size = [1, 1],
+                 bias = NO_BIAS,
+                 name = None,
                  activation=SIGMOID):
         """
         `size` - список слоев с количеством их нейронов.\n
