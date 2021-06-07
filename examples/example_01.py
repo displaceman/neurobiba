@@ -11,10 +11,10 @@ TRAINING_ITERATIONS = 5000
 
 
 #Создание весов
-weights = nb.Weights([3,8,1])
+weights = nb.Weights([2,8,1])
 
 #Генерация датасета
-input_neurons = [[random(), random(), 1] for _ in range(DATA_AMOUNT)]
+input_neurons = [[random(), random()] for _ in range(DATA_AMOUNT)]
 output_neurons = [i%2 for i in range(DATA_AMOUNT)]
 
 #Процесс обучения
@@ -29,7 +29,7 @@ draw = ImageDraw.Draw(image)
 #Отрисовка поля
 for x in range(WIDTH):
     for y in range(HEIGHT):
-        brightness = int(round(weights.feed_forward([x/WIDTH, y/HEIGHT, 1])[0])*255)
+        brightness = int(round(weights.feed_forward([x/WIDTH, y/HEIGHT])[0])*255)
         color = tuple([brightness] * 3)
         draw.point((x, y), color)
 

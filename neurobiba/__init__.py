@@ -10,7 +10,7 @@ _WEIGHTS_NAME_PREFIX = "weights_"
 class Weights():
     def __init__(self,
                  size=[1, 1],
-                 bias=False,
+                 bias=True,
                  name=None,
                  activation=SIGMOID):
         """
@@ -90,9 +90,8 @@ class Weights():
     def _feed_forward(self, input_layer):
         #Вычисляет и возвращает все слои
         layers = [array([input_layer])]
-        len_weights = len(self.weights)
 
-        for i in range(len_weights):
+        for i in range(len(self.weights)):
             if self.bias: layers[-1] = array([append(layers[-1], 1)])    #Альтернатива - следующая строка
             #layers = self._feed_forward_strategy(layers)
             layers.append(self.activation.fn(
