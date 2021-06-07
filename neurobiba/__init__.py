@@ -2,6 +2,7 @@ from numpy import (exp, random, array, dot, append, delete)
 from pickle import (dump, load)
 from neurobiba.activations import *
 from neurobiba.helpers import default_counter
+import os
 
 
 _WEIGHTS_NAME_PREFIX = "weights_"
@@ -148,17 +149,20 @@ def load_weights(file_name=_WEIGHTS_NAME_PREFIX + "0") -> Weights:
     В качестве аргумента `file_name` можно указать имя файла
     """
 
-    try:
-        with open(file_name, 'rb') as file:
-            print('file loaded')
-            return load(file)
-    except FileNotFoundError:
-        print(f'FileNotFoundError: No such file or directory: {file_name}')
+    if not os.path.exists(file_name):
+        raise FileNotFoundError(f'No such file or directory: {file_name}')
+    
+    with open(file_name, 'rb') as file:
+        result = load(file)
+        if isinstance(result, Weights):
+            return result
+        else:
+            raise TypeError
 
 
 def save_weights(weights, file_name=None):
     """
-    Схранение весов в файл.
+    Схранение весов в файл. 
     Пример использования:
     `save_weights(weights)`
     В качестве аргумента `file_name` можно указать имя файла
