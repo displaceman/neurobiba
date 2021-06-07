@@ -71,8 +71,8 @@ class Weights():
         # Корректрирует остальные слои весов
         for i in range(len(self.weights)-1):
             error = delta.dot(self.weights[len(self.weights)-1-i].T)
-            delta = (error * self.activation.deriv(layers[len(self.weights)-1-i]) * alpha)[0]
-            delta = array([delta[:len(delta)-self.bias]])
+            delta = error * self.activation.deriv(layers[len(self.weights)-1-i]) * alpha
+            if self.bias: delta = array([delta[0][:-1]])
             self.weights[-2-i] += layers[-3-i].T.dot(delta)
  
 
