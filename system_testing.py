@@ -1,4 +1,4 @@
-from neurobiba import Weights, load_weights, save_weights
+from neurobiba import BIAS, NO_BIAS, Weights, load_weights, save_weights
 import os
 
 def test():
@@ -7,7 +7,7 @@ def test():
     inp = [0, 1]
     outp = [1, 0]
 
-    w = Weights([2,5,10,4,2], bias = False)
+    w = Weights([2,5,10,4,2], bias = NO_BIAS)
     w.train(inp, outp)
 
     for i in range(2):
@@ -25,7 +25,7 @@ def test():
     path = os.path.join(os.path.abspath(os.path.dirname(__file__)), name)
     os.remove(path)
 
-    w = Weights([2, 1, 30, 2], bias = True)
+    w = Weights([2, 1, 30, 2], bias = BIAS)
     w.train(inp, outp)
     r = w.feed_forward(inp)
 
