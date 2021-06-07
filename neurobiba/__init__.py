@@ -120,7 +120,7 @@ class WithoutBiasStrategy(BiasStrategy):
     @staticmethod
     def train(network, input_layer, correct_output, alpha):
         # Прогон через нейрость
-        layers = network.__bias_strategy.feed_forward(network, input_layer)
+        layers = network._Weights__bias_strategy.feed_forward(network, input_layer)
         
         # Корректирует крайний слой весов
         WithoutBiasStrategy.correct_outer_layer(network, correct_output, layers, alpha)
