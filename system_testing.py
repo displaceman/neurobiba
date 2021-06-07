@@ -29,8 +29,20 @@ def test():
     w.train(inp, outp)
     r = w.feed_forward(inp)
 
-    print("Тест завершился без ошибок.")
+    print("test completed without errors")
 
 
 if __name__ == '__main__':
     test()
+
+
+
+# код для тестирования времени выполнения
+# import timeit
+
+# code_to_test_1 = """
+# print('hello world')
+# """
+
+# elapsed_time = timeit.timeit(code_to_test_1, number=100)/100
+# print(elapsed_time)

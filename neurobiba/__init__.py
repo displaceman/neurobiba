@@ -142,6 +142,7 @@ def load_weights(file_name=_WEIGHTS_NAME_PREFIX + "0") -> Weights:
     with open(file_name, 'rb') as file:
         result = load(file)
         if isinstance(result, Weights):
+            print('file loaded')
             return result
         else:
             raise TypeError
