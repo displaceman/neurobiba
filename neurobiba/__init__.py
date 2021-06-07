@@ -149,7 +149,7 @@ def load_weights(file_name=_WEIGHTS_NAME_PREFIX + "0") -> Weights:
     """
 
     try:
-        with open(file_name, 'rb') as file:
+        with open(f'{file_name}.dat', 'rb') as file:
             print('file loaded')
             return load(file)
     except FileNotFoundError:
@@ -166,6 +166,6 @@ def save_weights(weights, file_name=None):
     if file_name is None:
         file_name = weights.name
 
-    with open(file_name, 'wb') as file:
+    with open(f'{file_name}.dat', 'wb') as file:
         dump(weights, file)
         print('file saved')
