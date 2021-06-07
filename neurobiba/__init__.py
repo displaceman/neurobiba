@@ -29,10 +29,10 @@ class Weights():
             str(default_counter())
         self.activation = activation
         if bias:
-            self._feed_forward_strategy = _feed_forward_with_bias
+            #self._feed_forward_strategy = _feed_forward_with_bias
             self._feed_backward_strategy = _feed_backward_with_bias
         else:
-            self._feed_forward_strategy = _feed_forward_without_bias
+            #self._feed_forward_strategy = _feed_forward_without_bias
             self._feed_backward_strategy = _feed_backward_without_bias
 
         self.weights = [
@@ -93,8 +93,8 @@ class Weights():
         len_weights = len(self.weights)
 
         for i in range(len_weights):
-            #if self.bias: layers[-1] = array([append(layers[-1], 1)])    #Альтернатива - следующая строка
-            layers = self._feed_forward_strategy(layers)
+            if self.bias: layers[-1] = array([append(layers[-1], 1)])    #Альтернатива - следующая строка
+            #layers = self._feed_forward_strategy(layers)
             layers.append(self.activation.fn(
                 dot(layers[-1], self.weights[i])))
 
@@ -114,13 +114,13 @@ class Weights():
     
 
 
-def _feed_forward_without_bias(layers):
-    return layers
+#def _feed_forward_without_bias(layers):
+#    return layers
 
 
-def _feed_forward_with_bias(layers):
-    layers[-1] = array([append(layers[-1], 1)])
-    return layers
+#def _feed_forward_with_bias(layers):
+#    layers[-1] = array([append(layers[-1], 1)])
+#    return layers
 
 
 def _feed_backward_without_bias(weights, input_layer):
