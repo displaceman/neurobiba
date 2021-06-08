@@ -30,12 +30,20 @@ class Weights():
             str(default_counter())
         self.activation = activation
         if bias:
-            self._feed_backward_strategy = _feed_backward_with_bias
+            self._feed_backward_strategy = __feed_backward_with_bias
         else:
-            self._feed_backward_strategy = _feed_backward_without_bias
+            self._feed_backward_strategy = __feed_backward_without_bias
 
-        self.weights = [
-            2*random.random((size[i]+int(bias), size[i+1])) - 1 for i in range(len(size)-1)]
+        self.__weights = [2*random.random((size[i]+int(bias), size[i+1])) - 1
+                          for i in range(len(size)-1)]
+    
+
+    def __getitem__(self, key):
+        return self.__weights[key]
+    
+
+    def __call__(self, input_layer):
+        return self.feed_forward(input_layer)
 
 
     def train(self, input_layer, correct_output, alpha=0.9):
@@ -61,19 +69,19 @@ class Weights():
         """
 
         # Прогон через нейрость
-        layers = self._feed_forward(input_layer)   
+        layers = self.__feed_forward(input_layer)   
         
         # Корректирует крайний слой весов
         error = correct_output - layers[-1]
         delta = error * self.activation.deriv(layers[-1]) * alpha
-        self.weights[-1] += layers[-2].T.dot(delta)
+        self.__weights[-1] += layers[-2].T.dot(delta)
 
         # Корректрирует остальные слои весов
-        for i in range(len(self.weights)-1):
-            error = delta.dot(self.weights[len(self.weights)-1-i].T)
-            delta = error * self.activation.deriv(layers[len(self.weights)-1-i]) * alpha
+        for i in range(len(self.__weights)-1):
+            error = delta.dot(self.__weights[len(self.__weights)-1-i].T)
+            delta = error * self.activation.deriv(layers[len(self.__weights)-1-i]) * alpha
             if self.bias: delta = array([delta[0][:-1]])
-            self.weights[-2-i] += layers[-3-i].T.dot(delta)
+            self.__weights[-2-i] += layers[-3-i].T.dot(delta)
  
 
     def feed_forward(self, input_layer):
@@ -84,17 +92,17 @@ class Weights():
         `result = weights.feed_forward(input_layer)`\n
         `input_layer` - список входных нейронов.
         """
-        return self._feed_forward(input_layer)[-1][0]
+        return self.__feed_forward(input_layer)[-1][0]
     
 
-    def _feed_forward(self, input_layer):
+    def __feed_forward(self, input_layer):
         """Вычисляет и возвращает все слои"""
         layers = [array([input_layer])]
 
-        for i in range(len(self.weights)):
+        for i in range(len(self.__weights)):
             if self.bias: layers[-1] = array([append(layers[-1], 1)])
             layers.append(self.activation.fn(
-                dot(layers[-1], self.weights[i])))
+                dot(layers[-1], self.__weights[i])))
 
         return layers
 
@@ -110,7 +118,7 @@ class Weights():
         return self._feed_backward_strategy(self, input_layer)
 
 
-def _feed_backward_without_bias(weights, input_layer):
+def __feed_backward_without_bias(weights, input_layer):
     weightsr = list(reversed(weights.weights))
     for ind, i in enumerate(weightsr):
         weightsr[ind] = weightsr[ind].T
@@ -123,7 +131,7 @@ def _feed_backward_without_bias(weights, input_layer):
     return layers[-1][0]
 
 
-def _feed_backward_with_bias(_weights, _input_layer):
+def __feed_backward_with_bias(_weights, _input_layer):
     raise NotImplementedError(
         "feed_backward работает только с весами без биаса")
 
