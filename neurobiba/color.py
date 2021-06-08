@@ -1,74 +1,95 @@
 from numpy import array, dot
+from random import randint
+import colorsys
 
 class Color():
-	def __init__(self, color, norm=False):
-		if norm:
-			self.color = tuple(int(i*255) for i in color)
-			self.norm = tuple(color)
+	def __init__(self, color, norm=True):
+	
+		self.color = tuple(color)
+		self.norm = norm
+
+		self.r = self.color[0]
+		self.g = self.color[1]
+		self.b = self.color[2]
+
+	def get_255(self):
+		if self.norm==True:
+			return Color(int(i*255) for i in self.color)
 		else:
-			self.color = tuple(color)
-			self.norm = tuple(i/255 for i in color)
+			return self
+
+	def get_1(self):
+		if self.norm==True:
+			return self
+		else:
+			return Color(int(i*255) for i in self.color)
+
+	def clamp(self):
+		if norm==True:
+			n = 1
+		else:
+			b = 255
+		return Color(max(min(i, n), 0) for i in self.color)
+
+	def __abs__(self):
+		return Color(abs(i) for i in self.color)
+
 	def __add__(self, other): # +
-		return tuple(i+other for i in self.color)
+		return Color(i+other for i in self.color)
 	def __sub__(self, other): # -
-		return tuple(i-other for i in self.color)
+		return Color(i-other for i in self.color)
 	def __mul__(self, other): # *
-		return tuple(i*other for i in self.color)
+		return Color(i*other for i in self.color)
 	def __floordiv__(self, other): # //
-		return tuple(i//other for i in self.color)
+		return Color(i//other for i in self.color)
 	def __truediv__(self, other): # /
-		return tuple(i for i in self.color)
+		return Color(i/other for i in self.color)
 	def __mod__(self, other): # %
-		return tuple(i%other for i in self.color)
+		return Color(i%other for i in self.color)
 	def __pow__(self, other): # **
-		return tuple(i**other for i in self.color)
-	def mix(self, oter):
-		return tuple(int((self.color[i]+oter.color[i])*0.5) for i in range(3))
+		return Color(i**other for i in self.color)
+	def mix(self, oter, v):
+		return Color(self.color[i]*(1-v)+oter.color[i]*v for i in range(3))
+
+	def rgb_to_hls(self):
+		return Color(colorsys.rgb_to_hls(self.r, self.g, self.b))
+
+	def hls_to_rgb(self):
+		return Color(colorsys.hls_to_rgb(self.r, self.g, self.b))
 
 
-def mix3(
+
+def randcolor():
+	return tuple([randint(0,255) for _ in range(3)])
+
+
+def mix(
 	kef = [1,1,1],
 	colors = [
 		[244, 215, 94],
 		[233, 114, 61],
-		[11, 127, 171],
-		]
-	):
+		[11, 127, 171]
+	]):
 
 	colors = array(colors)
 	sum_kef = sum(kef)
 	kef = array([i/sum_kef for i in kef])
+
 	return tuple(map(int, kef.dot(colors)))
 
 
 
 if __name__ == "__main__":
-	a = Color([1,1,1])
-	if (a+1)[0] != 2:
-		print("Error +")
-	if (a-1)[0] != 0:
-		print("Error -")
-	if (a*2)[0] != 2:
-		print("Error *")
-	if (a//1)[0] != 1:
-		print("Error //")
-	if (a/1)[0] != 1:
-		print("Error /")
-	if (a%1)[0] != 0:
-		print("Error %")
-	if (a**2)[0] != 1:
-		print("Error **")
-	if(a.mix(Color([0,0,0])))[0] != 0:
-		print("Error mix")
-	print("test passed")
+	pass
 	#print(a.__dir__())
+
 
 # Палитры
 
-# c0 = [244, 215, 94],
-# c1 = [233, 114, 61],
-# c2 = [11, 127, 171]
+# [244, 215, 94],
+# [233, 114, 61],
+# [11, 127, 171]
 
-# c0 = [249, 222, 89],
-# c1 = [249, 131, 101],
-# c2 = [161, 223, 251]
+# [249, 222, 89],
+# [249, 131, 101],
+# [161, 223, 251]
