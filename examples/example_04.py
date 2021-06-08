@@ -5,9 +5,9 @@ from PIL import Image, ImageDraw
 from random import random
 
 # Константы
-IMAGE_SIZE = WIDTH, HEIGHT = 500, 500
+IMAGE_SIZE = WIDTH, HEIGHT = 200, 200
 DATA_AMOUNT = 16
-TRAINING_ITERATIONS = 10000
+TRAINING_ITERATIONS = 1000
 
 # Создание весов
 weights = Weights([2, 16, 3])

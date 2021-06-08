@@ -1,3 +1,5 @@
+from numpy import array, dot
+
 class Color():
 	def __init__(self, color, norm=False):
 		if norm:
@@ -25,20 +27,19 @@ class Color():
 
 
 def mix3(
-	kef,
-	c0 = [244, 215, 94],
-	c1 = [233, 114, 61],
-	c2 = [11, 127, 171]
+	kef = [1,1,1],
+	colors = [
+		[244, 215, 94],
+		[233, 114, 61],
+		[11, 127, 171],
+		]
 	):
 
+	colors = array(colors)
 	sum_kef = sum(kef)
-	kef = list(i/sum_kef for i in kef)
+	kef = array([i/sum_kef for i in kef])
+	return tuple(map(int, kef.dot(colors)))
 
-	r = c0[0]*kef[0] + c1[0]*kef[1] + c2[0]*kef[2]
-	g = c0[1]*kef[0] + c1[1]*kef[1] + c2[1]*kef[2]
-	b = c0[2]*kef[0] + c1[2]*kef[1] + c2[2]*kef[2]
-	
-	return (int(r), int(g), int(b))
 
 
 if __name__ == "__main__":
