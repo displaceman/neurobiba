@@ -19,7 +19,7 @@ pip install neurobiba
 
 See [examples](./examples)
 
-![example_01](./examples/color delimiter/example_04.PNG)
+![example_01](./examples/color_delimiter/example_04.png)
 
 # how to use
 
