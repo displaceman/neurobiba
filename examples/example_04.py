@@ -1,5 +1,5 @@
 from neurobiba import Weights
-from neurobiba.color import mix3, randcolor
+from neurobiba.color import mix, randcolor
 
 from PIL import Image, ImageDraw
 from random import random
