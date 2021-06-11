@@ -5,20 +5,22 @@ from PIL import Image, ImageDraw
 from random import random
 
 # Константы
-IMAGE_SIZE = WIDTH, HEIGHT = 500, 500
+NUMBER_OF_COLORS = 4
+IMAGE_SIZE = WIDTH, HEIGHT = 100, 100
 DATA_AMOUNT = 16
 TRAINING_ITERATIONS = 10000
+
 
 iteration = 0
 while True:
     iteration += 1
 
     # Создание весов
-    weights = Weights([2, 16, 3])
+    weights = Weights([2, 16, NUMBER_OF_COLORS])
 
     # Генерация датасета
     input_neurons = [[random(), random()] for _ in range(DATA_AMOUNT)]
-    output_neurons = [[i%3==0, i%3==1, i%3==2] for i in range(DATA_AMOUNT)]
+    output_neurons = [[i%NUMBER_OF_COLORS==ind for ind in range(NUMBER_OF_COLORS)] for i in range(DATA_AMOUNT)]
 
     # Процесс обучения
     for _ in range(TRAINING_ITERATIONS):
@@ -30,7 +32,7 @@ while True:
     draw = ImageDraw.Draw(image)
 
     # Генерация цветов
-    colors = [randcolor(),randcolor(),randcolor()]
+    colors = [randcolor() for _ in range(NUMBER_OF_COLORS)]
 
     # Отрисовка поля
     for x in range(WIDTH):
@@ -47,5 +49,5 @@ while True:
             outline = (0, 0, 0))
 
     # Вывод изображения
-    #image.show()
+    image.show()
     image.save(str(iteration)+".png", 'png')
