@@ -34,8 +34,13 @@ class Weights():
         else:
             self._feed_backward_strategy = __feed_backward_without_bias
 
-        self.__weights = [2*random.random((size[i]+int(bias), size[i+1])) - 1
+
+        self.__weights = [ random.randn((size[i]+int(bias), size[i+1])) 
                           for i in range(len(size)-1)]
+    
+
+        # self.__weights = [2*random.random((size[i]+int(bias), size[i+1])) - 1
+        #                   for i in range(len(size)-1)]
     
 
     def __getitem__(self, key):
