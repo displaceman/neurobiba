@@ -5,10 +5,10 @@ from PIL import Image, ImageDraw
 from random import random
 
 # Константы
-NUMBER_OF_COLORS = 4
-IMAGE_SIZE = WIDTH, HEIGHT = 100, 100
+NUMBER_OF_COLORS = 16
+IMAGE_SIZE = WIDTH, HEIGHT = 500, 500
 DATA_AMOUNT = 16
-TRAINING_ITERATIONS = 10000
+TRAINING_ITERATIONS = 5000
 
 
 iteration = 0
@@ -16,7 +16,7 @@ while True:
     iteration += 1
 
     # Создание весов
-    weights = Weights([2, 16, NUMBER_OF_COLORS])
+    weights = Weights([2, 8, NUMBER_OF_COLORS])
 
     # Генерация датасета
     input_neurons = [[random(), random()] for _ in range(DATA_AMOUNT)]
@@ -49,5 +49,5 @@ while True:
             outline = (0, 0, 0))
 
     # Вывод изображения
-    image.show()
+    # image.show()
     image.save(str(iteration)+".png", 'png')
