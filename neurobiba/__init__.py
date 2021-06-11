@@ -30,9 +30,9 @@ class Weights():
             str(default_counter())
         self.activation = activation
         if bias:
-            self._feed_backward_strategy = __feed_backward_with_bias
+            self._feed_backward_strategy = _feed_backward_with_bias
         else:
-            self._feed_backward_strategy = __feed_backward_without_bias
+            self._feed_backward_strategy = _feed_backward_without_bias
 
         self.__weights = [2*random.random((size[i]+int(bias), size[i+1])) - 1
                           for i in range(len(size)-1)]
@@ -118,8 +118,8 @@ class Weights():
         return self._feed_backward_strategy(self, input_layer)
 
 
-def __feed_backward_without_bias(weights, input_layer):
-    weightsr = list(reversed(weights.weights))
+def _feed_backward_without_bias(weights, input_layer):
+    weightsr = list(reversed(weights[:]))
     for ind, i in enumerate(weightsr):
         weightsr[ind] = weightsr[ind].T
 
@@ -131,7 +131,7 @@ def __feed_backward_without_bias(weights, input_layer):
     return layers[-1][0]
 
 
-def __feed_backward_with_bias(_weights, _input_layer):
+def _feed_backward_with_bias(_weights, _input_layer):
     raise NotImplementedError(
         "feed_backward работает только с весами без биаса")
 
