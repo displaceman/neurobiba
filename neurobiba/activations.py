@@ -1,5 +1,5 @@
 from numpy import exp
-
+from numpy import maximum
 
 class Activation():
     def __init__(self, activation, derivative):
@@ -23,7 +23,7 @@ SIGMOID = Activation(_sigmoid, _sigmoid_derivative)
 
 
 def _relu(x):
-    return (x>0)*x
+    return maximum(x, 0)
 def _relu_derivative(x):
-    return (x>=0)*1
+    return 1-x**0
 RELU = Activation(_relu, _relu_derivative)
