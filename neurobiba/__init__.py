@@ -30,9 +30,9 @@ class Weights():
             str(default_counter())
         self.activation = activation
         if bias:
-            self._feed_backward_strategy = _feed_backward_with_bias
+            self.__feed_backward_strategy = _feed_backward_with_bias
         else:
-            self._feed_backward_strategy = _feed_backward_without_bias
+            self.__feed_backward_strategy = _feed_backward_without_bias
 
         self.__weights = [2*random.random((size[i]+int(bias), size[i+1])) - 1
                           for i in range(len(size)-1)]
@@ -115,7 +115,7 @@ class Weights():
         Пример:\n
         `r = weights.feed_backward(input_layer)`\n
         """
-        return self._feed_backward_strategy(self, input_layer)
+        return self.__feed_backward_strategy(self, input_layer)
 
 
 def _feed_backward_without_bias(weights, input_layer):
