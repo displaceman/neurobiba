@@ -67,6 +67,8 @@ class Weights():
         `alpha` - коэфициент скорости обучения. 
         Его оптимальное значение меняется в зависимости от задачи.
         """
+        if self.activation != SIGMOID:
+            alpha=0.005
 
         # Прогон через нейрость
         layers = self.__feed_forward(input_layer)   
@@ -82,7 +84,7 @@ class Weights():
             delta = error * self.activation.deriv(layers[len(self.__weights)-1-i]) * alpha
             if self.bias: delta = array([delta[0][:-1]])
             self.__weights[-2-i] += layers[-3-i].T.dot(delta)
- 
+    
 
     def feed_forward(self, input_layer):
         """

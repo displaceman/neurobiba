@@ -36,11 +36,9 @@ for x in range(WIDTH):
 #Отрисовка точек
 for ind, i in enumerate(input_neurons):
     x, y = int(i[0]*WIDTH), int(i[1]*HEIGHT)
-    brightness = int(output_neurons[ind]*255)
     rect = (x-5, y-5, x+5, y+5)
-    fill = tuple([brightness] * 3)
-    outline = tuple(map(lambda a: 255-a, fill))
-    draw.ellipse(rect, fill = fill, outline = outline)
+    fill = tuple([int(output_neurons[ind]*255)] * 3)
+    draw.ellipse(rect, fill = fill, outline = tuple(map(lambda a: 255-a, fill)))
 
 #Вывод изображения
 image.show()
