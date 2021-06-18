@@ -119,6 +119,19 @@ class Weights():
         """
         return self.__feed_backward_strategy(self, input_layer)
 
+    def mutation(self, power=1, probability=0.1):
+        for i in self.__weaghts:
+            nn = []
+            for ii in i:
+                nnn = []
+                for iii in ii:
+                    if rand.random()<probability:
+                        nnn.append(iii*(rand.random()*2-1)*power)
+                    else:
+                        nnn.append(iii)
+                nn.append(nnn)
+            self.__weaghts = [array(nn)]
+
 
 def _feed_backward_without_bias(weights, input_layer):
     weightsr = list(reversed(weights[:]))
