@@ -114,6 +114,7 @@ class Weights():
         return self.__feed_backward_strategy(self, input_layer)
 
     def mutation(self, power=1, probability=0.5):
+        n = []
         for i in self.__weights:
             nn = []
             for ii in i:
@@ -124,7 +125,8 @@ class Weights():
                     else:
                         nnn.append(iii)
                 nn.append(nnn)
-            self.__weights = [array(nn)]
+            n.append(array(nn))
+        self.__weights = n
 
 
 def _feed_backward_without_bias(weights, input_layer):
