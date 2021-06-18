@@ -1,19 +1,15 @@
 from numpy import (exp, random, array, dot, append, delete)
+import random as rand
 from pickle import (dump, load)
 from neurobiba.activations import *
 from neurobiba.helpers import default_counter
 import os
 
-
 _WEIGHTS_NAME_PREFIX = "weights_"
 
 
 class Weights():
-    def __init__(self,
-                 size=[1, 1],
-                 bias=True,
-                 name=None,
-                 activation=SIGMOID):
+    def __init__(self, size=[1, 1], bias=True, name=None, activation=SIGMOID):
         """
         `size` - список слоев с количеством их нейронов.\n
         `bias` - этот флаг добавляет к каждому слою нейрон смещения.\n
@@ -34,17 +30,16 @@ class Weights():
         else:
             self.__feed_backward_strategy = _feed_backward_without_bias
 
-        self.__weights = [2*random.random((size[i]+int(bias), size[i+1])) - 1
-                          for i in range(len(size)-1)]
-    
+        self.__weights = [
+            2 * random.random((size[i] + int(bias), size[i + 1])) - 1
+            for i in range(len(size) - 1)
+        ]
 
     def __getitem__(self, key):
         return self.__weights[key]
-    
 
     def __call__(self, input_layer):
         return self.feed_forward(input_layer)
-
 
     def train(self, input_layer, correct_output, alpha=0.9):
         """
@@ -68,23 +63,23 @@ class Weights():
         Его оптимальное значение меняется в зависимости от задачи.
         """
         if self.activation != SIGMOID:
-            alpha=0.005
+            alpha = 0.005
 
         # Прогон через нейрость
-        layers = self.__feed_forward(input_layer)   
-        
+        layers = self.__feed_forward(input_layer)
+
         # Корректирует крайний слой весов
         error = correct_output - layers[-1]
         delta = error * self.activation.deriv(layers[-1]) * alpha
         self.__weights[-1] += layers[-2].T.dot(delta)
 
         # Корректрирует остальные слои весов
-        for i in range(len(self.__weights)-1):
-            error = delta.dot(self.__weights[len(self.__weights)-1-i].T)
-            delta = error * self.activation.deriv(layers[len(self.__weights)-1-i]) * alpha
+        for i in range(len(self.__weights) - 1):
+            error = delta.dot(self.__weights[len(self.__weights) - 1 - i].T)
+            delta = error * self.activation.deriv(
+                layers[len(self.__weights) - 1 - i]) * alpha
             if self.bias: delta = array([delta[0][:-1]])
-            self.__weights[-2-i] += layers[-3-i].T.dot(delta)
-    
+            self.__weights[-2 - i] += layers[-3 - i].T.dot(delta)
 
     def feed_forward(self, input_layer):
         """
@@ -95,7 +90,6 @@ class Weights():
         `input_layer` - список входных нейронов.
         """
         return self.__feed_forward(input_layer)[-1][0]
-    
 
     def __feed_forward(self, input_layer):
         """Вычисляет и возвращает все слои"""
@@ -103,8 +97,8 @@ class Weights():
 
         for i in range(len(self.__weights)):
             if self.bias: layers[-1] = array([append(layers[-1], 1)])
-            layers.append(self.activation.fn(
-                dot(layers[-1], self.__weights[i])))
+            layers.append(
+                self.activation.fn(dot(layers[-1], self.__weights[i])))
 
         return layers
 
@@ -119,18 +113,18 @@ class Weights():
         """
         return self.__feed_backward_strategy(self, input_layer)
 
-    def mutation(self, power=1, probability=0.1):
-        for i in self.__weaghts:
+    def mutation(self, power=1, probability=0.5):
+        for i in self.__weights:
             nn = []
             for ii in i:
                 nnn = []
                 for iii in ii:
-                    if rand.random()<probability:
-                        nnn.append(iii*(rand.random()*2-1)*power)
+                    if rand.random() < probability:
+                        nnn.append(iii * (rand.random() * 2 - 1) * power)
                     else:
                         nnn.append(iii)
                 nn.append(nnn)
-            self.__weaghts = [array(nn)]
+            self.__weights = [array(nn)]
 
 
 def _feed_backward_without_bias(weights, input_layer):
@@ -161,7 +155,7 @@ def load_weights(file_name=_WEIGHTS_NAME_PREFIX + "0") -> Weights:
 
     if not os.path.exists(file_name):
         raise FileNotFoundError(f'No such file or directory: {file_name}')
-    
+
     with open(file_name, 'rb') as file:
         result = load(file)
         if isinstance(result, Weights):
