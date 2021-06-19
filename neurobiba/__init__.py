@@ -113,7 +113,7 @@ class Weights():
         """
         return self.__feed_backward_strategy(self, input_layer)
 
-    def mutation(self, power=1, probability=0.5):
+    def mutate(self, power=1, probability=0.5):
         n = []
         for i in self.__weights:
             nn = []
