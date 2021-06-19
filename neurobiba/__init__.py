@@ -121,7 +121,7 @@ class Weights():
                 nnn = []
                 for iii in ii:
                     if rand.random() < probability:
-                        nnn.append(iii * (rand.random() * 2 - 1) * power)
+                        nnn.append(iii + (rand.random() * 2 - 1) * power)
                     else:
                         nnn.append(iii)
                 nn.append(nnn)
