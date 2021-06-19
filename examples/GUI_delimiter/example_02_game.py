@@ -118,5 +118,6 @@ while is_running:
     window_surface.blit(image, (SIDEBAR_WIDTH, 0))
 
     manager.draw_ui(window_surface)
-
     pg.display.flip()
+    
+    

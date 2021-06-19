@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='neurobiba',
-    version='0.16',
+    version='0.17',
     description='small collection of functions for neural networks',
     long_description='https://github.com/displaceman/neurobiba',
     url='https://github.com/displaceman/neurobiba',
